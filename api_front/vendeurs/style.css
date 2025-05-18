@@ -1,0 +1,25 @@
+*{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+}
+body{
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f4f4;
+}
+.container{
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+}
+.cardVendeur {
+      background-color: #fff;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+}
+.cardVendeur h3 {
+      margin-bottom: 10px;
+}
