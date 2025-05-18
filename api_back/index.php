@@ -18,20 +18,18 @@ $db = $database->getConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Endpoint permet de lire dans l'url le type de requête, par la suite on saura quel controller appeler
+// Endpoint permet de lire dans l'url le type de requête( sans endpoint), par la suite on saura quel controller appeler
 
-if (isset($_GET['endpoint'])){
-$endpoint = $_GET['endpoint'];
+// On récupère l'URI
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri = explode('/', $uri);
+$resource = end($uri);
 
-switch ($endpoint){
-      case 'marques':
-            $controller = new ControllerMarque($db);
-            $controller->handleRequest($method, $data);
-            break;
-      default:
-            echo json_encode(['error' => 'Endpoint non trouvé']);
-
-} 
-}else {
-      echo json_encode(['error' => 'Endpoint manquant']);
+switch ($resource) {
+    case 'marques':
+        $controller = new ControllerMarque($db);
+        $controller->handleRequest($method, $data);
+        break;
+    default:
+        echo json_encode(['error' => 'Ressource non trouvée']);
 }
