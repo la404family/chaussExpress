@@ -1,35 +1,102 @@
 <?php
-require_once '../config/Database.php';
-$pdo = new Database();
 
 class Vendeur {
-    private $pdo;
+    private \PDO $pdo;
+    private string $table = 'vendeurs';
 
-    public function __construct($pdo)
+    public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }
-// Fonction pour récupérer toutes les marques
-    public function getModeles()
+
+    // Récupérer tous les vendeurs
+    public function getAll(): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM vendeurs ORDER BY id DESC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $query = "SELECT * FROM {$this->table} ORDER BY id DESC";
+            $stmt = $this->pdo->query($query);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la récupération des vendeurs : " . $e->getMessage());
+        }
     }
 
-    // Fonction pour récupérer les demandes
-     public function afficherDemande()
+    // Récupérer un vendeur par ID
+    public function getById(int $id): ?array
     {
-        try{
-            $stmt = $this->pdo->query("SELECT clients_id FROM demandes ORDER BY id DESC"); 
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo "Erreur lors de la récupération des demandes: " . $e->getMessage();
-            return [];
+        try {
+            $query = "SELECT * FROM {$this->table} WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['id' => $id]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la récupération du vendeur par ID : " . $e->getMessage());
         }
+    }
 
+    // Créer un nouveau vendeur
+    public function create(string $nom, string $prenom, string $mail, string $password_hash, bool $is_admin = false): bool
+    {
+        try {
+            $query = "INSERT INTO {$this->table} (nom, prenom, mail, password_hash, is_admin) 
+                      VALUES (:nom, :prenom, :mail, :password_hash, :is_admin)";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([
+                'nom'           => $nom,
+                'prenom'        => $prenom,
+                'mail'          => $mail,
+                'password_hash' => $password_hash,
+                'is_admin'      => $is_admin ? 1 : 0
+            ]);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la création du vendeur : " . $e->getMessage());
+        }
+    }
+
+    // Mettre à jour un vendeur
+    public function update(int $id, string $nom, string $prenom, string $mail, string $password_hash, bool $is_admin): bool
+    {
+        try {
+            $query = "UPDATE {$this->table} 
+                      SET nom = :nom, prenom = :prenom, mail = :mail, 
+                          password_hash = :password_hash, is_admin = :is_admin
+                      WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([
+                'id'            => $id,
+                'nom'           => $nom,
+                'prenom'        => $prenom,
+                'mail'          => $mail,
+                'password_hash' => $password_hash,
+                'is_admin'      => $is_admin ? 1 : 0
+            ]);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la mise à jour du vendeur : " . $e->getMessage());
+        }
+    }
+
+    // Supprimer un vendeur
+    public function delete(int $id): bool
+    {
+        try {
+            $query = "DELETE FROM {$this->table} WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute(['id' => $id]);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la suppression du vendeur : " . $e->getMessage());
+        }
+    }
+
+    // Récupérer les demandes (clients_id depuis table `demandes`)
+    public function getDemandes(): array
+    {
+        try {
+            $query = "SELECT clients_id FROM demandes ORDER BY id DESC";
+            $stmt = $this->pdo->query($query);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la récupération des demandes : " . $e->getMessage());
+        }
     }
 }
-//Afficher toutes les marques
-$vendeur = new Vendeur ($pdo->getConnection());
-$vendeurs = $vendeur->getModeles();
-var_dump($vendeurs);

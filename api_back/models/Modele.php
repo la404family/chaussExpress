@@ -1,144 +1,115 @@
 <?php
-// require_once '../config/Database.php';
-// $pdo = new Database();
+// require_once __DIR__ . '/../config/Database.php';
+// require_once __DIR__ . '/../models/Modele.php';  
 
 class Modele {
-    private $pdo;
-    private $table = 'modeles';
-    // public $id;
-    // public $modele;
-    // public $description;
-    // public $prix;
-    // public $image;
-    // public $marque_id;
-    public function __construct($pdo)
+    private \PDO $pdo;
+    private string $table = 'modeles';
+
+    public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }
-// Fonction pour récupérer tous les modèles
-    public function getAllModeles()
+
+    // Récupérer tous les modèles
+    public function getAllModeles(): array
     {
-        try{
-    
-          $query = "SELECT * FROM " . $this->table;
-        $stmt = $this->pdo->query($query);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    }  catch (PDOException $e) {
-       throw new Exception("Erreur lors de la récupération des modèles: " . $e->getMessage());
-    }
+        try {
+            $query = "SELECT * FROM {$this->table}";
+            $stmt = $this->pdo->query($query);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la récupération des modèles: " . $e->getMessage());
+        }
     }
 
-    //Fonction pour selectionner un modèle par son id
-
-    public function getById($id)
+    // Récupérer un modèle par son ID
+    public function getById(int $id): ?array
     {
-        try{ 
-               $query = "SELECT * FROM " . $this->table . " WHERE id = :id ORDER BY id DESC";
-        // Préparer la requête
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute(['id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $query = "SELECT * FROM {$this->table} WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['id' => $id]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la récupération du modèle par ID: " . $e->getMessage());
+        }
+    }
 
+    // Récupérer un modèle par son nom
+    public function getByName(string $modele): ?array
+    {
+        try {
+            $query = "SELECT * FROM {$this->table} WHERE modele = :modele";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['modele' => $modele]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $result ?: null;
         } catch (PDOException $e) {
-          throw new Exception("Erreur lors de la récupération du modèle par ID: " . $e->getMessage());
-
+            throw new Exception("Erreur lors de la récupération du modèle par nom: " . $e->getMessage());
+        }
     }
-}
-    // Fonction pour récupérer un modèle par son nom
-    public function getByName($modele)
+
+    // Créer un nouveau modèle
+    public function createModele(string $modele, string $description, float $prix, string $image, int $marque_id): bool
     {
-        try{
-        $query = "SELECT * FROM " . $this->table . " WHERE modele = :modele ORDER BY id DESC";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':modele', $modele);
-        $stmt->execute(['modele' => $modele]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $query = "INSERT INTO {$this->table} (modele, description, prix, image, marque_id)
+                      VALUES (:modele, :description, :prix, :image, :marque_id)";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([
+                'modele'     => $modele,
+                'description'=> $description,
+                'prix'       => $prix,
+                'image'      => $image,
+                'marque_id'  => $marque_id
+            ]);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la création du modèle: " . $e->getMessage());
+        }
+    }
 
-    } catch (PDOException $e) {
-       throw new Exception("Erreur lors de la récupération du modèle par nom: " . $e->getMessage());
+    // Supprimer un modèle
+    public function delete(int $id): bool
+    {
+        try {
+            $query = "DELETE FROM {$this->table} WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute(['id' => $id]);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la suppression du modèle: " . $e->getMessage());
+        }
+    }
+
+    // Mettre à jour un modèle
+    public function update(int $id, string $modele, string $description, float $prix, string $image, int $marque_id): bool
+    {
+        try {
+            $query = "UPDATE {$this->table} 
+                      SET modele = :modele, description = :description, prix = :prix, image = :image, marque_id = :marque_id
+                      WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([
+                'id'         => $id,
+                'modele'     => $modele,
+                'description'=> $description,
+                'prix'       => $prix,
+                'image'      => $image,
+                'marque_id'  => $marque_id
+            ]);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la mise à jour du modèle: " . $e->getMessage());
+        }
     }
 }
+// $modele = new Modele($pdo);
+// require_once '../config/Database.php';
+// require_once '../models/Modele.php';
 
-// Fonction pour créer un nouveau modèle
-   public function createModele($modele, $description, $prix, $image, $marque_id) {
-        try{
-        $query = "INSERT INTO " . $this->table . " (modele, description, prix, image, marque_id) VALUES (:modele, :description, :prix, :image, :marque_id)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':modele', $modele);
-        $stmt->bindParam(':description', $description);
-        $stmt->bindParam(':prix', $prix);
-        $stmt->bindParam(':image', $image);
-        $stmt->bindParam(':marque_id', $marque_id);
-        // Échapper les caractères spéciaux pour éviter les injections XSS
-        return $stmt->execute(['modele' => $modele, 'description' => $description, 'prix' => $prix, 'image' => $image, 'marque_id' => $marque_id]);
-
-    } catch (PDOException $e) {
-       throw new Exception("Erreur lors de la création du modèle: " . $e->getMessage());
-    }
-    }
-
-    // créer un nouveau modèle à une marque
-    public function createModeleMarque($marque_id,$modele, $description, $prix, $image) {
-        try{
-        $query = "INSERT INTO " . $this->table . " (modele, description, prix, image, marque_id) VALUES (:modele, :description, :prix, :image, :marque_id)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':modele', $modele);
-        $stmt->bindParam(':description', $description);
-        $stmt->bindParam(':prix', $prix);
-        $stmt->bindParam(':image', $image);
-        // Échapper les caractères spéciaux pour éviter les injections XSS
-        return $stmt->execute(['marque_id' => $marque_id, 'modele' => $modele, 'description' => $description, 'prix' => $prix, 'image' => $image]);
-
-    } catch (PDOException $e) {
-        throw new Exception("Erreur lors de la création du modèle: " . $e->getMessage());
-    }
-
-
-    }
-
-
-
-
-    public function delete($id) {
-        try{
-        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute(['id' => $id]);
-    } catch (PDOException $e) {
-       throw new Exception("Erreur lors de la suppression du modèle: " . $e->getMessage());
-    }
-}
-
-// Fonction pour mettre à jour une marque
-
-public function update($id, $modele, $description, $prix, $image, $marque_id) {
-    // Vérifier si le modèle existe déjà
-    try{
-        $query = "UPDATE " . $this->table . " SET modele = :modele, description = :description, prix = :prix, image = :image, marque_id = :marque_id WHERE id = :id";
-        $stmt = $this->pdo->prepare($query);
-        return $stmt->execute(
-            ['id' => $id, 
-            'modele' => $modele, 
-            'description' => $description, 
-            'prix' => $prix, 
-            'image' => $image, 
-            'marque_id' => $marque_id]
-        );
-    } catch (PDOException $e) {
-        throw new Exception("Erreur lors de la mise à jour du modèle: " . $e->getMessage());
-
-    }
-    try{
-       $query = "UPDATE " . $this->table . " SET marque_id = :marque_id WHERE id = :id";
-        $stmt = $this->pdo->prepare($query);    
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':marque_id', $marque_id);
-    } catch (PDOException $e) {
-       throw new Exception("Erreur lors de la mise à jour de la marque du modèle: " . $e->getMessage());
-    }
-}
-}
-
+// // Initialize the database connection
+// $database = new Database();
+// $modele= new Modele($database->getConnection());
+// // Example usage
+// $modeles = $modele->getAllModeles();
+// var_dump($modeles);

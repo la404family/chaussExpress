@@ -29,19 +29,22 @@ class ModeleController {
                     else {
                         $result = $this->modeles->getAllModeles();
                     }
-                  echo json_encode(['success' => true,'data' => $result]);
+                  echo json_encode(['success' => true,'data' => $result
+]);
                     break;
-
+                    
                     case 'POST':
                          if (!empty($data['id']) && !empty($data['modele']) && !empty($data['description']) && !empty($data['prix']) && !empty($data['image']) && !empty($data['marque_id'])) {
+                             
                              // Récupérer les données du formulaire
-                             $marque_id = htmlspecialchars(strip_tags(trim($data['marque_id'])));
                              $modele = htmlspecialchars(strip_tags(trim($data['modele'])));
                              $description = htmlspecialchars(strip_tags(trim($data['description'])));
                              $prix = htmlspecialchars(strip_tags(trim($data['prix'])));
                              $image = htmlspecialchars(strip_tags(trim($data['image'])));
+                             $marque_id = htmlspecialchars(strip_tags(trim($data['marque_id'])));
+            
 
-                             $modelePresent = $this->modeles->getByName(['modele' => $modele]);
+                      $modelePresent = $this->modeles->getByName($modele);
                         if ($modelePresent) {
                             echo json_encode(['success' => false, 'message' => 'Le modèle existe déjà']);
                             exit;
