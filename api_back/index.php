@@ -19,6 +19,7 @@ $db = $database->getConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents("php://input"), true) ?? [];
 
+
 // Extraction de la ressource depuis l'URL
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uriParts = explode('/', $uri);
@@ -33,7 +34,7 @@ switch ($ressource) {
         break;
     default:
         http_response_code(404);
-        echo json_encode(['error' => 'Resource not found']);
+        echo json_encode(['error' => 'Ressource non trouvée']);
         exit();
 }
 

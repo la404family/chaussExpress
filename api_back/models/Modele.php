@@ -25,7 +25,7 @@ class Modele {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     }  catch (PDOException $e) {
-        echo json_encode(['error' => "Erreur lors de la récupération des modèles: " . $e->getMessage()]);
+       throw new Exception("Erreur lors de la récupération des modèles: " . $e->getMessage());
     }
     }
 
@@ -42,7 +42,7 @@ class Modele {
         return $stmt->fetch(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
-            echo json_encode(['error' => "Erreur lors de la récupération du modèle: " . $e->getMessage()]);
+          throw new Exception("Erreur lors de la récupération du modèle par ID: " . $e->getMessage());
 
     }
 }
@@ -57,7 +57,7 @@ class Modele {
         return $stmt->fetch(PDO::FETCH_ASSOC);
 
     } catch (PDOException $e) {
-        echo json_encode(['error' => "Erreur lors de la récupération du modèle: " . $e->getMessage()]);
+       throw new Exception("Erreur lors de la récupération du modèle par nom: " . $e->getMessage());
     }
 }
 
@@ -75,9 +75,31 @@ class Modele {
         return $stmt->execute(['modele' => $modele, 'description' => $description, 'prix' => $prix, 'image' => $image, 'marque_id' => $marque_id]);
 
     } catch (PDOException $e) {
-        echo json_encode(['error' => "Erreur lors de la création du modèle: " . $e->getMessage()]);
+       throw new Exception("Erreur lors de la création du modèle: " . $e->getMessage());
     }
     }
+
+    // créer un nouveau modèle à une marque
+    public function createModeleMarque($marque_id,$modele, $description, $prix, $image) {
+        try{
+        $query = "INSERT INTO " . $this->table . " (modele, description, prix, image, marque_id) VALUES (:modele, :description, :prix, :image, :marque_id)";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':modele', $modele);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':prix', $prix);
+        $stmt->bindParam(':image', $image);
+        // Échapper les caractères spéciaux pour éviter les injections XSS
+        return $stmt->execute(['marque_id' => $marque_id, 'modele' => $modele, 'description' => $description, 'prix' => $prix, 'image' => $image]);
+
+    } catch (PDOException $e) {
+        throw new Exception("Erreur lors de la création du modèle: " . $e->getMessage());
+    }
+
+
+    }
+
+
+
 
     public function delete($id) {
         try{
@@ -86,13 +108,14 @@ class Modele {
         $stmt->bindParam(':id', $id);
         return $stmt->execute(['id' => $id]);
     } catch (PDOException $e) {
-        echo json_encode(['error' => "Erreur lors de la suppression du modèle: " . $e->getMessage()]);
+       throw new Exception("Erreur lors de la suppression du modèle: " . $e->getMessage());
     }
 }
 
 // Fonction pour mettre à jour une marque
 
 public function update($id, $modele, $description, $prix, $image, $marque_id) {
+    // Vérifier si le modèle existe déjà
     try{
         $query = "UPDATE " . $this->table . " SET modele = :modele, description = :description, prix = :prix, image = :image, marque_id = :marque_id WHERE id = :id";
         $stmt = $this->pdo->prepare($query);
@@ -102,10 +125,11 @@ public function update($id, $modele, $description, $prix, $image, $marque_id) {
             'description' => $description, 
             'prix' => $prix, 
             'image' => $image, 
-            'marque_id' => $marque_id
-        ]);
+            'marque_id' => $marque_id]
+        );
     } catch (PDOException $e) {
-        echo json_encode(['error' => "Erreur lors de la mise à jour du modèle: " . $e->getMessage()]);
+        throw new Exception("Erreur lors de la mise à jour du modèle: " . $e->getMessage());
+
     }
     try{
        $query = "UPDATE " . $this->table . " SET marque_id = :marque_id WHERE id = :id";
@@ -113,7 +137,7 @@ public function update($id, $modele, $description, $prix, $image, $marque_id) {
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':marque_id', $marque_id);
     } catch (PDOException $e) {
-        echo json_encode(['error' => "Erreur lors de la mise à jour de la marque: " . $e->getMessage()]);
+       throw new Exception("Erreur lors de la mise à jour de la marque du modèle: " . $e->getMessage());
     }
 }
 }
