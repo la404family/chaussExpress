@@ -90,38 +90,62 @@ class ModeleController {
                     }
                     break;
 
-            case 'PUT':
-                    if (isset($data['id']) && isset($data['modele']) && isset($data['description']) && isset($data['prix']) && isset($data['image'])) {
-                    // Récupérer les données du formulaire
-                    $data['modele'] = htmlspecialchars(strip_tags(trim($data['modele'])));
-                    $data['description'] = htmlspecialchars(strip_tags(trim($data['description'])));
-                    $data['prix'] = htmlspecialchars(strip_tags(trim($data['prix'])));
+           case 'PUT':
+    // Vérification des champs obligatoires
+    if (
+        isset($data['id']) &&
+        isset($data['modele']) &&
+        isset($data['description']) &&
+        isset($data['prix']) &&
+        isset($data['image']) &&
+        isset($data['marque_id'])
+    ) {
+        // Nettoyage des données
+        $id = htmlspecialchars(strip_tags(trim($data['id'])));
+        $modele = htmlspecialchars(strip_tags(trim($data['modele'])));
+        $description = htmlspecialchars(strip_tags(trim($data['description'])));
+        $prix = htmlspecialchars(strip_tags(trim($data['prix'])));
+        $image = htmlspecialchars(strip_tags(trim($data['image'])));
+        $marque_id = htmlspecialchars(strip_tags(trim($data['marque_id'])));
 
-                    $succes = $this->modeles->update($data['id'], $data['modele'], $data['description'], $data['prix'], $data['image'], $data['marque_id']);
-                    echo json_encode(['success' => true,'data' => $succes]);
-                    exit;}
-                $modelePresent = $this->modeles->getById($data['name']);
-                if ($modelePresent) {
-                    echo json_encode(['success' => false, 'message' => 'Le modèle existe déjà']);
-                    exit;
-                }
-                if (strlen($data['modele']) < 2 || strlen($data['modele']) > 30 || strlen($data['description']) < 20 || strlen($data['description']) > 100 || strlen($data['prix']) < 1 || strlen($data['prix']) > 10 || strlen($data['image']) < 2 || strlen($data['image']) > 150) {
-                    echo json_encode(['success' => false, 'message' => 'Le modèle ou un champ a une longueur invalide']);
-                    exit;
-                } else {
-                  echo json_encode([
-    'success' => false,
-    'message' => 'Erreur lors de la mise à jour du modèle.'
-]);
-                }
-                //
+        // Vérification de la longueur des champs
+        if (
+            strlen($modele) < 2 || strlen($modele) > 30 ||
+            strlen($description) < 20 || strlen($description) > 100 ||
+            strlen($prix) < 1 || strlen($prix) > 10 ||
+            strlen($image) < 2 || strlen($image) > 150
+        ) {
+            echo json_encode(['success' => false, 'message' => 'Un ou plusieurs champs ont une longueur invalide.']);
+            exit;
+        }
+
+        // Vérifier si un autre modèle porte déjà ce nom (doublon)
+        $modeleExist = $this->modeles->getByName($modele);
+        if ($modeleExist && $modeleExist['id'] != $id) {
+            echo json_encode(['success' => false, 'message' => 'Un autre modèle porte déjà ce nom.']);
+            exit;
+        }
+
+        // Mise à jour
+        $succes = $this->modeles->update($id, $modele, $description, $prix, $image, $marque_id);
+
+        echo json_encode([
+            'success' => $succes,
+            'message' => $succes ? 'Modèle mis à jour avec succès.' : 'Erreur lors de la mise à jour.'
+        ]);
+        exit;
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Champs manquants pour la mise à jour.']);
+    }
+    exit;
                 break;
 
             default:
     echo json_encode([
     'success' => false,
-    'message' => 'Erreur...'
+    'message' => 'Erreur lors de la mise à jour du modèle.'
 ]);
+                    exit;
                 break;
         }
     }

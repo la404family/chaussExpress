@@ -1,70 +1,40 @@
 <?php
+// J'ajoute les header CORS pour permettre d'appeler l'API depuis le front
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, DELETE,PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
+// J'inclus les fichiers nécessaires pour la connexion à la BDD et le controller
+// J'inclus les fichiers nécessaires pour la connexion à la BDD et le controller
 
 require_once __DIR__ . '/config/Database.php';
 require_once __DIR__ . '/Controllers/marqueController.php';
 require_once __DIR__ . '/Controllers/modeleController.php';
-// require_once __DIR__ . '/Controllers/demandeController.php';
-// require_once __DIR__ . '/Controllers/clientController.php';
-// require_once __DIR__ . '/Controllers/pointureQuantiteController.php';
-// require_once __DIR__ . '/Controllers/commandeController.php'; 
 
-// Gestion des requêtes OPTIONS pour CORS
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
-
-// Connexion à la base de données
+// Connexion à la BDD
 $database = new Database();
 $db = $database->getConnection();
 
-// Méthode HTTP et données JSON
+// Je récupère les données envoyées par le front (fetch) et je les transforme en tableau associatif
 $method = $_SERVER['REQUEST_METHOD'];
-$data = json_decode(file_get_contents("php://input"), true) ?? [];
+$data = json_decode(file_get_contents("php://input"), true);
 
-// Analyse de l'URL
+// Endpoint permet de lire dans l'url le type de requête( sans endpoint), par la suite on saura quel controller appeler
+
+// On récupère l'URI
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uriParts = explode('/', trim($uri, '/'));
+$uri = explode('/', $uri);
+$resource = end($uri);
 
-// Exemple : ['api', 'marques', '5']
-$ressource = $uriParts[count($uriParts) - 2] ?? end($uriParts); // "marques"
-$id = end($uriParts);
-
-// Si l'ID est numérique, on l'injecte dans $_GET['id']
-if (is_numeric($id)) {
-    $_GET['id'] = $id;
-} else {
-    $ressource = $id; // Si pas d'ID, c'est simplement la ressource
-}
-
-// Appel du contrôleur selon la ressource
-switch ($ressource) {
+switch ($resource) {
     case 'marques':
         $controller = new MarqueController($db);
+        $controller->handleRequest($method, $data);
         break;
     case 'modeles':
         $controller = new ModeleController($db);
+        $controller->handleRequest($method, $data);
         break;
-    // case 'pointure_quantites':
-    //     $controller = new PointureQuantiteController($db);
-    //     break;
-    // case 'demandes':
-    //     $controller = new DemandeController($db);
-    //     break;
-    // case 'clients':
-    //     $controller = new ClientController($db);
-    //     break;
-    // case 'commandes':
-    //     $controller = new CommandeController($db);
-    //     break;
     default:
-        http_response_code(404);
         echo json_encode(['error' => 'Ressource non trouvée']);
-        exit;
 }
-
-// Appel de la méthode handleRequest du contrôleur
-$controller->handleRequest($method, $data);

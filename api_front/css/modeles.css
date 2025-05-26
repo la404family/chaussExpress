@@ -1,4 +1,4 @@
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -60,7 +60,6 @@ h2 {
     height: 200px;
     transition: 0.5s ease-in-out;
     box-shadow: 0 4px 8px rgba(46, 45, 45, 0.2);
-    position: relative;
 }
 .card2 h3 {
     font-size: 2rem;
@@ -80,9 +79,9 @@ h2 {
     width: 100px;
     text-align: center;
 }
-.card2Modifier {
-    display: flex;
-    flex-direction: column;
+#modifierModele{
+    display: block;
+    /* flex-direction: column; */
     justify-content: center;
     align-items: center;
     background-color: rgb(255, 255, 255);
@@ -90,13 +89,12 @@ h2 {
     border-radius: 15px;
     padding: 1vw 2vw;
     width: 50%;
-    height: 70vh;
+    height: 600px;
     box-shadow: 0 4px 8px rgba(46, 45, 45, 0.2);
-    position: relative;
-    top: 10px;
-    z-index: 2;
+    /* position: absolute; */
+    /* top: 10px; */
 }
-.card2Modifier input {
+#modifierModele input {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -199,4 +197,4 @@ h2 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
+} */

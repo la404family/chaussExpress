@@ -85,15 +85,15 @@ class Client {
 // require_once '../config/Database.php';
 // require_once '../models/Client.php';
 
-$pdo = (new Database())->getConnection();
-$clientModel = new Client($pdo);
+// $pdo = (new Database())->getConnection();
+// $clientModel = new Client($pdo);
 
-// Récupérer tous les clients
-$clients = $clientModel->getAll();
-echo '<pre>'; print_r($clients); echo '</pre>';
+// // Récupérer tous les clients
+// $clients = $clientModel->getAll();
+// echo '<pre>'; print_r($clients); echo '</pre>';
 
-// Récupérer un client spécifique
-print_r($clientModel->getById(1));
+// // Récupérer un client spécifique
+// print_r($clientModel->getById(1));
 
 // Créer un nouveau client
 // $clientModel->create("Jean", "Durand", "jean.durand@mail.com");
