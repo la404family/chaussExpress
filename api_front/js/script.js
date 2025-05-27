@@ -56,9 +56,9 @@ function getMarquesAll() {
                         <button type="button" class="annulerModifier">❌</button>
                         <div class="messageContainerModifier" id="messageContainerModifierAnnuler-${marque.id}"></div>
                     `;
+
                     card.innerHTML = "";
                     card.appendChild(formModifier);
-
                     const btnValiderModifier = formModifier.querySelector(".btnValiderModifier");
                     const btnAnnulerModifier = formModifier.querySelector(".annulerModifier");
 

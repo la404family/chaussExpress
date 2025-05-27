@@ -15,7 +15,8 @@ function getModeles(id) {
                 cardModele.classList.add("card2");
                 cardModele.innerHTML = `
                     <h3>${modele.modele}</h3>
-                    <p>${modele.description}</p>  
+                    <p>${modele.description}</p> 
+                    <img src="/api_back/uploads/${modele.image}" alt="${modele.modele}" width="200" height="auto" style="border-radius: 10px;"/>
                     <h4>${modele.prix}</h4>
                     <span class="msgSuppression" id="messageContainerSupprimerModele"></span>
                     <span class="msgModification" id="messageContainerModifierModele"></span>
@@ -99,7 +100,7 @@ function getModeles(id) {
                             const messageContainerModifierModele = cardModele.querySelector(
                                 "#messageContainerModifierModele"
                             );
-                            messageContainerModifierModele.textContent = "Veuillez remplir tous les champs.";
+                            messageContainerModifierModele.textContent = data.message;
                             messageContainerModifierModele.style.color = "red";
                             setTimeout(() => {
                                 messageContainerModifierModele.textContent = "";
@@ -113,7 +114,7 @@ function getModeles(id) {
                             const newModele = formModifierModele.modele.value;
                             const newDescription = formModifierModele.description.value;
                             const newPrix = formModifierModele.prix.value;
-                            const newImage = formModifierModele.image.files[0];
+                            const newImage = formModifierModele.image.files[0] ? formModifierModele.image.files[0].name : modele.image;
                             
                             setTimeout(() => {
                                 messageContainerModifierModele.textContent = "";
@@ -208,7 +209,76 @@ function updateModele(id, newModele, newDescription, newPrix, newImage) {
          error = `${error.message}`;
         });
 }
-updateModele(3, "Nouveau Modèle", "Nouvelle Description", 99.99, "nouvelle_image.jpg"); // Exemple d'appel de la fonction pour mettre à jour un modèle
+updateModele(); // Exemple d'appel de la fonction pour mettre à jour un modèle
+
+
+
+
+//Ajouter un modèle à une marque
+//D'abord, on récupère l'id de la marque
+function chargerMarques() {
+  fetch("http://localhost:3000/api_back/index.php/marques")
+    .then((res) => res.json())
+    .then((data) => {
+        console.log(data);
+        data.forEach((marque) => {
+        const select = document.querySelector("#marque_id");
+          const option = document.createElement("option");
+          option.value = marque.id;
+          option.textContent = marque.marque; 
+          select.appendChild(option);
+        });
+    })
+    .catch((err) => console.error("Erreur de récupération des marques :", err));
+}
+
+chargerMarques(); // Appel de la fonction pour charger les marques
+
+
+// Ajouter un modèle
+// Ajouter un modèle
+const addModeleForm = document.querySelector("#addModeleForm");
+addModeleForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+    const form = document.querySelector("#addModeleForm");
+    const formData = new FormData(form); // Créer un FormData pour gérer les fichiers et les champs du formulaire
+    const messageContainer = document.querySelector("#messageContainerAjoutModele");
+
+  fetch("http://localhost:3000/api_back/index.php/modeles", {
+    method: "POST", 
+    body: formData,
+    headers: {
+      "Accept": "application/json",
+      // "Content-Type": "application/json", ( pas pour )
+    },body: formData, 
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        messageContainer.textContent = data.message;
+        messageContainer.style.color = "green";
+        setTimeout(() => {
+          messageContainer.textContent = "";
+          form.reset(); 
+        }, 3000);
+      } else {
+        messageContainer.textContent = data.message;
+        messageContainer.style.color = "red";
+        setTimeout(() => {
+          messageContainer.textContent = "";
+        }, 3000);
+      }
+    })
+    .catch((err) => {
+      messageContainer.textContent = "Erreur lors de l'envoi du modèle.";
+      messageContainer.style.color = "red";
+      console.error("Erreur fetch :", err);
+        setTimeout(() => {
+            messageContainer.textContent = "";
+        }, 3000);
+    });
+});
 
 // // ---------------------- AFFICHER LES MARQUES
 // // ---------------------- AFFICHER LES MARQUES

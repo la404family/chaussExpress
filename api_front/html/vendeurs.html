@@ -3,112 +3,86 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Chauss'Express</title>
-        <link rel="stylesheet" href="../css/style.css" />
+        <title>Vendeurs</title>
+        <link rel="stylesheet" href="/api_front/css/style.css" />
+        <link rel="stylesheet" href="/api_front/css/vendeur.css" />
     </head>
     <body>
         <header>
-            <h1>Chauss'Express - Gestion des Vendeurs</h1>
+            <h1>Chauss'Express - Nos vendeurs</h1>
             <nav>
                 <ul>
-                    <li><a href="../index.html">Accueil</a></li>
-                    <li><a href="vendeurs.html">Vendeurs</a></li>
-                    <li><a href="stocks.html">Stocks</a></li>
-                    <li><a href="modeles.html">Modèles</a></li>
+                    <li><a href="/api_front/html/index.html">Accueil</a></li>
+                    <li><a href="/api_front/html/vendeurs.html">Vendeurs</a></li>
+                    <li><a href="/api_front/html/stocks.html">Stocks</a></li>
+                    <li><a href="/api_front/html/modeles.html">Modèles</a></li>
                 </ul>
             </nav>
         </header>
         <main>
-            <div id="vendeur">
-                <h2>Nos marques</h2>
-                <div id="stocksContainer">
-                    <!-- div administrateur -->
-                    <!-- Messages d'erreur pour la suppression et modification -->
-                </div>
-                <div id="adminContainer">
-            
-                    <!-- Les bouttons seront injectées ici par JS -->
-                    
-                </div>
-                <h2>Nos modèles</h2>
-                <div id="modelesContainer">
-                    <!-- Les modèles seront injectés ici par JS -->
+            <div id="vendeursContainer">
+                <h2>Liste des Vendeurs</h2>
+                <div id="vendeursList">
+                    <!-- Les vendeurs seront injectés ici par JS -->
                 </div>
             </div>
-            <div class="admin">
-                <div class="form-container">
-                    <h2>Gestion des marques</h2>
-                    <div class="ajouterMarque">
-                        <!-- form pour ajouter une marque -->
-                        <form method="post" action="" id="addMarqueForm">
-                            <label for="marque">Ajouter une nouvelle marque :</label>
-                            <input
-                                type="text"
-                                id="marque"
-                                id="marque"
-                                name="marque"
-                                placeholder="Nouvelle Marque"
-                        
-                            />
-                            <button type="submit" id="btnAjoutMarque">
-                                Ajouter
-                            </button>
-                            <div id="messageContainerAjoutmarque"></div>
-                        </form>
-                        <!-- Fin -->
-                    </div>
-                    <div class="ajouterModele" id="ajouterForm">
-                        <!-- Form pour ajouter un modèle -->
-                        <form method="put" action="" id="addModeleForm">
-                            <label for="marque_id">Sélectionner une marque :</label>
-                            <select id="marque_id" name="marque_id" required>
-                                <option value="">--Sélectionner une marque--</option>
-                            </select>
-                            <input
-                                type="text"
-                                id="modele"
-                                name="modele"
-                                placeholder="Nouveau Modèle"
-                                required
-                            />
-                            <input
-                                type="text"
-                                id="description"
-                                name="description"
-                                placeholder="Description du Modèle"
-                                required
-                            />
-                            <input
-                                type="text"
-                                id="prix"
-                                name="prix"
-                                placeholder="Prix du Modèle"
-                                required
-                            />
-                            <label for="image">Image :</label>
-                            <input
-                                type="file"
-                                id="image"
-                                name="image"
-                                accept="image/*"
-                                required
-                            />
-                            <button type="submit" id="btnAjoutModele">
-                                Ajouter
-                            </button>
-                            <div id="messageContainerAjoutModele"></div>
-                        </form>
-                        <!-- Fin Form pour ajouter un modèle -->
-                    </div>
-                </div>
+            <div id="administrateursContainer">
+                <!-- Ajouter un vendeur avec le formulaire -->
+                <h2>Ajouter un Vendeur</h2>
+                <form action="" method="post" id="formAjouterVendeur">
+                    <input
+                        type="file"
+                        id="vendeurImage"
+                        name="image"
+                        accept="image/*"
+                        required
+                    />
+                    <label for="vendeurName">Nom du Vendeur :</label>
+                    <input
+                        type="text"
+                        id="vendeurName"
+                        name="nom"
+                        placeholder="Nom du Vendeur"
+                        required
+                    />
+
+                    <label for="vendeurPrenom">Prénom du Vendeur :</label>
+                    <input
+                        type="text"
+                        id="vendeurPrenom"
+                        name="prenom"
+                        placeholder="Prénom du Vendeur"
+                        required
+                    />
+
+                    <label for="vendeurEmail">Email du Vendeur :</label>
+                    <input
+                        type="email"
+                        id="vendeurEmail"
+                        name="email"
+                        placeholder="Email du Vendeur"
+                        autocomplete="email"
+                        required
+                    />
+
+                    <label for="vendeurPassword">Mot de passe :</label>
+                    <input
+                        type="password"
+                        id="vendeurPassword"
+                        name="password"
+                        placeholder="Mot de passe"
+                        autocomplete="current-password"
+                        required
+                    />
+                    <input type="password" name="password" autocomplete="current-password" required />
+
+                    <button type="submit" id="btnAddVendeur">Ajouter</button>
+                    <div id="messageContainer"></div>
+                </form>
+                <div class="statistique"></div>
             </div>
         </main>
-        <footer>
-            <p>&copy; 2025 Chauss'Express</p>
-        </footer>
 
-        <script src="../js/script.js"></script>
-        <script src="../js/fonctionAffichage.js"></script>
-        <script src="../js/modelesScript.js"></script>
+        <script src="/api_front/js/vendeur.js"></script>
     </body>
 </html>

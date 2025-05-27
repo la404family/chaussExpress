@@ -8,8 +8,6 @@ header("Access-Control-Allow-Headers: Content-Type");
 // J'inclus les fichiers nécessaires pour la connexion à la BDD et le controller
 
 require_once __DIR__ . '/config/Database.php';
-require_once __DIR__ . '/Controllers/marqueController.php';
-require_once __DIR__ . '/Controllers/modeleController.php';
 
 // Connexion à la BDD
 $database = new Database();
@@ -28,12 +26,19 @@ $resource = end($uri);
 
 switch ($resource) {
     case 'marques':
+        require_once __DIR__ . '/Controllers/marqueController.php';
         $controller = new MarqueController($db);
         $controller->handleRequest($method, $data);
         break;
-    case 'modeles':
+        case 'modeles':
+            require_once __DIR__ . '/Controllers/modeleController.php';
         $controller = new ModeleController($db);
-        $controller->handleRequest($method, $data);
+        $controller->handleRequest($method, $data, $_FILES);
+        break;
+    case 'vendeurs':
+        require_once __DIR__ . '/Controllers/vendeurController.php';
+        $controller = new VendeurController($db);
+        $controller->handleRequest($method, $data, $_FILES);
         break;
     default:
         echo json_encode(['error' => 'Ressource non trouvée']);

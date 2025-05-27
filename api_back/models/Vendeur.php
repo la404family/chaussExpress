@@ -1,5 +1,5 @@
 <?php
-
+// require_once '../models/Vendeur.php';
 class Vendeur {
     private \PDO $pdo;
     private string $table = 'vendeurs';

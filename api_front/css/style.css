@@ -8,7 +8,7 @@ body {
     font-family: "Poppins", sans-serif;
     background-color: white;
     width: 100%;
-  
+    /* position: relative; */
 }
 /* Header  */
 header {
@@ -18,6 +18,7 @@ header {
     align-items: center;
     padding: 20px;
     background-color: rgb(13, 43, 71);
+    position: relative;
 }
 header nav {
     width: 40%;
@@ -37,30 +38,40 @@ main {
     /* justify-content: center;
     align-items: flex-start; */
     padding: 20px;
-
+    /* position: relative; */
 }
 
 /* ------------------------------------Admin */
 .admin {
     display: flex;
-justify-content: right;
-
-}
-.admin h2{
-}
-#vendeur{  
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 20px;
-
-}
-.form-container{
-    display: flex;
-    flex-direction: column;
-    align-items: right ;
-    gap: 20px;
+    justify-content: right;
     position: sticky;
+    top: 0;
+    right: 0;
+    /* width: 30%; */
+    height: 100vh;
+    color: white;
+    padding: 20px;
+    z-index: 1;
+}
+.admin h2 {
+
+    margin-top: 30px;
+}
+#vendeur {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    padding: 20px;
+}
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+    /* gap: 20px; */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 .addMarqueResponse {
     color: green;
@@ -113,7 +124,7 @@ justify-content: right;
     color: rgb(255, 255, 255);
     font-weight: bold;
 }
-.annulerModifier{
+.annulerModifier {
     background-color: none;
     border: none;
     padding: 1vw 2vw;
@@ -174,7 +185,6 @@ h2 {
     color: brown;
     margin: 5px 0;
     text-align: center;
-
 }
 a {
     text-decoration: none;
@@ -226,6 +236,8 @@ h3 {
     height: 300px;
     transition: 0.5s ease-in-out;
     box-shadow: 0 4px 8px rgba(33, 32, 32, 0.2);
+    position: relative;
+    border: solid rgba(0, 0, 0, 0.217);
 }
 .card form button {
     text-align: center;
@@ -264,33 +276,53 @@ h3 {
     font-size: 0.8rem;
     text-align: bottom;
 }
-.cardSuppression{
+.cardSuppression {
     background-color: red;
     transition: all 0.5s ease-in-out;
     color: white;
+}
+#modelesContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
 }
 .card2 {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    align-items: center;
     background-color: whitesmoke;
     margin: 2vw 3vw;
     border-radius: 5px;
     padding: 1vw 2vw;
-    width: 80%;
-    height: 200px;
+    width: 300px;
+    height: 500px;
     transition: 0.5s ease-in-out;
     box-shadow: 0 4px 8px rgba(46, 45, 45, 0.2);
+    border: solid rgba(0, 0, 0, 0.217);
     position: relative;
 }
+span {
+    font-size: 1.2rem;
+    color: rgb(39, 38, 38);
+    margin-bottom: 25px;
+}
+.card2:hover {
+}
 .card2 h3 {
-    font-size: 2rem;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: bold;
     color: rgb(117, 48, 88);
     transition: 0.5s ease-in-out;
     box-shadow: inset 0 0 0 0 rgba(39, 38, 38);
 }
 .card2 p {
+text-align: center;
     font-size: 1.2rem;
+    margin-bottom: 5px;
     color: rgb(39, 38, 38);
 }
 .card2 h4 {
@@ -300,23 +332,50 @@ h3 {
     padding: 6px 3px;
     width: 100px;
     text-align: center;
+    margin-top: 5px;
 }
 .card2Modifier {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(255, 255, 255);
+    justify-content: flex-end;
+    align-items: flex-end;
+    /* justify-content: center; */
+    background-color: whitesmoke;
     margin: 2vw 3vw;
     border-radius: 15px;
     padding: 1vw 2vw;
-    width: 50%;
-    height:40vh;
-    box-shadow: 0 4px 8px rgba(46, 45, 45, 0.2);
+    width: 300px;
+    height: 400px;
+    /* transition: 0.5s ease-in-out; */
+    box-shadow: 0 20px 15px 20px rgba(32, 30, 30, 0.294);
+    /* position: relative; */
+    position: absolute;
+    top: 30px;
+    right: 0;
+    z-index: 211;
+}
+
+#modifierModele {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+#annulerModifierModele {
+    /* background-color: none;
+    border: none;
+    padding: 1vw 2vw;
+    margin: 2vw;
+    font-size: 1rem;
+    cursor: pointer;
     position: absolute;
     top: 0;
     right: 0;
-    z-index: 211;
+    border-radius: 10px;
+    color: rgb(251, 0, 0); */
 }
 .deleteModeleBtn {
     background: none;
@@ -325,8 +384,8 @@ h3 {
     margin: 2vw;
     cursor: pointer;
     position: absolute;
-    top: 10px;
-    right: 0;
+    bottom: 0;
+    left: 0;
     font-size: 0.7rem;
     background-color: rgb(170, 44, 5);
     border-radius: 10px;
@@ -340,13 +399,12 @@ h3 {
     margin: 2vw;
     cursor: pointer;
     position: absolute;
-    bottom: 10px;
+    bottom: 0;
     right: 0;
     font-size: 0.7rem;
     background-color: rgb(48, 77, 73);
     border-radius: 10px;
     color: white;
-
 }
 .deleteModeleBtn:hover,
 .editModeleBtn:hover {
@@ -370,16 +428,22 @@ h3 {
     height: 200px;
     transition: 0.2s ease-in-out;
 }
-.ajouterModele, #addModeleForm {
-    justify-content: space-around;
+.ajouterModele,
+#addModeleForm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: whitesmoke;
     border-radius: 5px;
     padding: 1vw 2vw;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    /* gap: 10px; */
     text-align: center;
-    
+}
+.addModeleForm select {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 #addModeleForm button {
     background-color: rgb(13, 43, 71);
@@ -391,20 +455,23 @@ h3 {
     cursor: pointer;
     font-size: 0.8rem;
 }
-.annulerModifierModele{
- background-color: none;
-   border: none;
+#addModeleForm label, input {
+    color: rgb(39, 38, 38);
+    margin-bottom: 10px;
+
+}
+.annulerModifierModele {
+    background-color: none;
+    border: none;
     padding: 1vw 2vw;
     margin: 2vw;
     font-size: 1rem;
     cursor: pointer;
     position: absolute;
-    top: 10px;
+    top: 0;
     right: 0;
-    background-color: rgb(255, 255, 255);
     border-radius: 10px;
     color: rgb(251, 0, 0);
-    
 }
 .addform {
     display: flex;

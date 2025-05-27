@@ -15,7 +15,7 @@ class Modele {
     public function getAllModeles(): array
     {
         try {
-            $query = "SELECT * FROM {$this->table}";
+            $query = "SELECT * FROM {$this->table}" . " ORDER BY id DESC";
             $stmt = $this->pdo->query($query);
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
