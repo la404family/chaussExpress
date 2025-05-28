@@ -12,33 +12,19 @@
 
         <form id="connexionForm" action="" method="POST">
             <label for="username">Nom d'utilisateur :</label>
-            <input type="text" id="username" name="username"/>
+            <input type="text" id="username" name="username" autocomplete="username"/>
 
             <label for="password">Mot de passe :</label>
-            <input type="password" id="password" name="password"/>
+            <input type="password" id="password" name="password"  autocomplete="current-password"/>
             <button type="submit" id="btnSeConnecter">Se connecter</button>
 
             <p>
                 Vous n'êtes pas encore inscrit ?
                 <a href="" id="inscriptionLink">Inscrivez-vous ici</a>
             </p>
-            <div id="inscription">
-                <h3>Inscription</h3>
-                <form id="inscriptionForm" action="" method="POST">
-                    <label for="userName">Nom d'utilisateur :</label>
-                    <input type="text" id="userName" name="userName" />
-                    <label for="firstName">Prénom :</label>
-                    <input type="text" id="firstName" name="firstName"/>
-
-                    <label for="mdp">Mot de passe :</label>
-                    <input type="password" id="mdp" name="mdp" />
-                    <label for="email">Email :</label>
-                    <input type="email" id="email" name="email" />
-                    <button type="submit" id="btnSinscrire">S'inscrire</button>
-                    <button id="croixfermer">❌</button>
-                </form>
-            </div>
         </form>
+       
+
         <script src="../js/connexion.js"></script>
     </body>
 </html>

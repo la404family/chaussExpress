@@ -14,70 +14,78 @@ class VendeurController {
         switch ($method) {
             case 'GET':
                 $result = isset($_GET['id'])
-                    ? $this->vendeurs->getById($_GET['id'])
-                    : $this->vendeurs->getAll();
+                    ? $this->vendeurs->getByIdWithDemandesCount($_GET['id'])
+                    : $this->vendeurs->getAllWithDemandesCount();
                 echo json_encode(['success' => true, 'data' => $result]);
                 break;
 
+            case 'DELETE':
+                if (!empty($data['id'])) {
+                    $success = $this->vendeurs->delete($data['id']);
+                    echo json_encode([
+                        'success' => $success,
+                        'message' => $success ? 'Vendeur supprimé' : 'Échec de la suppression'
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'ID manquant pour suppression']);
+                }
+                break;
+
             case 'POST':
-                $this->handleCreateVendeur();
+                  if (isset($data['nom'], $data['prenom'], $data['email'], $data['password'],$data['is_admin']) &&
+                        !empty($data['nom']) &&
+                        !empty($data['prenom']) &&
+                        !empty($data['email']) &&
+                        !empty($data['password']) &&
+                        !empty($data['is_admin'])
+                  ) {
+                        $nom = htmlspecialchars(strip_tags(trim($data['nom'])));
+                        $prenom = htmlspecialchars(strip_tags(trim($data['prenom'])));
+                        $email = htmlspecialchars(strip_tags(trim($data['email'])));
+                        $password = password_hash(htmlspecialchars(strip_tags(trim($data['password']))), PASSWORD_BCRYPT);
+                        $is_admin = isset($data['is_admin']) ? (bool)$data['is_admin'] : false;
+      
+                        $success = $this->vendeurs->create($nom, $prenom, $email, $password, $is_admin);
+                        echo json_encode([
+                              'success' => $success,
+                              'message' => $success ? 'Vendeur ajouté avec succès' : 'Erreur lors de l\'ajout du vendeur'
+                        ]);
+                  } else {
+                        echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+                        exit;
+                  }
+                  break;
+            case 'PUT': 
+                  if ( isset($data['id'], $data['nom'], $data['prenom'], $data['email'], $data['password'],$data['is_admin']) &&
+                        !empty($data['id']) &&
+                        !empty($data['nom']) &&
+                        !empty($data['prenom']) &&
+                        !empty($data['email']) &&
+                        !empty($data['password']) &&
+                        !empty($data['is_admin'])
+                  ) {
+                        $id = (int)$data['id'];
+                        $nom = htmlspecialchars(strip_tags(trim($data['nom'])));
+                        $prenom = htmlspecialchars(strip_tags(trim($data['prenom'])));
+                        $email = htmlspecialchars(strip_tags(trim($data['email'])));
+                        $password = password_hash(htmlspecialchars(strip_tags(trim($data['password']))), PASSWORD_BCRYPT);
+                        $is_admin = isset($data['is_admin']) ? (bool)$data['is_admin'] : false;
+      
+                        $success = $this->vendeurs->update($id, $nom, $prenom, $email, $password, $is_admin);
+                        echo json_encode([
+                              'success' => $success,
+                              'message' => $success ? 'Vendeur mis à jour avec succès' : 'Erreur lors de la mise à jour du vendeur'
+                        ]);
+                  } else {
+                        echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+                        exit;
+                  }
                 break;
 
             default:
-                echo json_encode(['error' => 'Méthode non supportée']);
-        }
-    }
-
-    private function handleCreateVendeur() {
-        if (
-            !empty($_POST['nom']) &&
-            !empty($_POST['prenom']) &&
-            !empty($_POST['mail']) &&
-            !empty($_POST['password']) &&
-            isset($_FILES['image'])
-        ) {
-            // Vérifier image
-            if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-                echo json_encode(['error' => 'Erreur d\'upload de l\'image']);
-                return;
-            }
-
-            $imageTmp = $_FILES['image']['tmp_name'];
-            $imageName = basename($_FILES['image']['name']);
-            $uploadPath = __DIR__ . '/../uploads/' . $imageName;
-
-            $fileType = mime_content_type($imageTmp);
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            if (!in_array($fileType, $allowedTypes)) {
-                echo json_encode(['error' => 'Type de fichier non autorisé']);
-                return;
-            }
-
-            if ($_FILES['image']['size'] > 2 * 1024 * 1024) {
-                echo json_encode(['error' => 'Fichier trop volumineux']);
-                return;
-            }
-
-            if (!move_uploaded_file($imageTmp, $uploadPath)) {
-                echo json_encode(['error' => 'Échec du téléchargement de l\'image']);
-                return;
-            }
-
-            // Sécuriser champs
-            $nom = htmlspecialchars(strip_tags(trim($_POST['nom'])));
-            $prenom = htmlspecialchars(strip_tags(trim($_POST['prenom'])));
-            $mail = htmlspecialchars(strip_tags(trim($_POST['mail'])));
-            $password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
-            $is_admin = isset($_POST['is_admin']) ? (bool)$_POST['is_admin'] : false;
-
-            $success = $this->vendeurs->create($nom, $prenom, $imageName, $mail, $password, $is_admin);
-
-            echo json_encode([
-                'success' => $success,
-                'message' => $success ? 'Vendeur ajouté' : 'Erreur lors de l\'ajout'
-            ]);
-        } else {
-            echo json_encode(['error' => 'Champs requis manquants']);
+                echo json_encode(['success' => false, 'message' => 'Méthode non supportée']);
         }
     }
 }
+        
+      

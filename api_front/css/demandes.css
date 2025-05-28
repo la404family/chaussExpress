@@ -1,0 +1,74 @@
+*{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+}
+body {
+  width: 100%;
+}
+main{
+      display: flex;
+justify-content: center;
+margin:20px
+      
+}
+#demandesContainer{
+ 
+      /* display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; */
+   
+}
+#demandesList{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+}
+.demande {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  width: 300px;
+height: 300px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: rgb(187, 209, 201);
+}
+#formulaireDemande{
+      width: 40%;
+}
+#demandeForm{
+
+      margin: 20px auto;
+
+      padding: 30px;
+      border-radius: 10px;
+      gap: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: rgb(187, 209, 201);
+}
+#demandeForm select{
+      width: 100%;
+      height: 40px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      font-size: 16px;
+}
+.demande button {
+      width: 100px;
+      height: 40px;
+      background-color: #4CAF50; /* Green */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+}

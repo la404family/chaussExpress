@@ -1,6 +1,6 @@
 <?php
 // J'ajoute les header CORS pour permettre d'appeler l'API depuis le front
-header("Content-Type: application/json");
+header('Content-Type: application/json; charset=utf-8');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, DELETE,PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -33,12 +33,17 @@ switch ($resource) {
         case 'modeles':
             require_once __DIR__ . '/Controllers/modeleController.php';
         $controller = new ModeleController($db);
-        $controller->handleRequest($method, $data, $_FILES);
+        $controller->handleRequest($method, $data,);
         break;
     case 'vendeurs':
         require_once __DIR__ . '/Controllers/vendeurController.php';
         $controller = new VendeurController($db);
-        $controller->handleRequest($method, $data, $_FILES);
+        $controller->handleRequest($method, $data);
+        break;
+    case 'demandes':
+        require_once __DIR__ . '/Controllers/demandeController.php';
+        $controller = new DemandeController($db);
+        $controller->handleRequest($method, $data);
         break;
     default:
         echo json_encode(['error' => 'Ressource non trouvée']);

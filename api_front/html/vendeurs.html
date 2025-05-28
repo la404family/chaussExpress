@@ -12,10 +12,10 @@
             <h1>Chauss'Express - Nos vendeurs</h1>
             <nav>
                 <ul>
-                    <li><a href="/api_front/html/index.html">Accueil</a></li>
-                    <li><a href="/api_front/html/vendeurs.html">Vendeurs</a></li>
-                    <li><a href="/api_front/html/stocks.html">Stocks</a></li>
-                    <li><a href="/api_front/html/modeles.html">Modèles</a></li>
+                    <li><a href="../html/index.html">Accueil</a></li>
+                    <li><a href="../html/clients.html">Clients</a></li>
+                    <li><a href="../html/vendeurs.html">Vendeurs</a></li>
+                    <li><a href="../html/demandes.html">Demandes</a></li>
                 </ul>
             </nav>
         </header>
@@ -29,55 +29,32 @@
             <div id="administrateursContainer">
                 <!-- Ajouter un vendeur avec le formulaire -->
                 <h2>Ajouter un Vendeur</h2>
-                <form action="" method="post" id="formAjouterVendeur">
-                    <input
-                        type="file"
-                        id="vendeurImage"
-                        name="image"
-                        accept="image/*"
-                        required
-                    />
-                    <label for="vendeurName">Nom du Vendeur :</label>
-                    <input
-                        type="text"
-                        id="vendeurName"
-                        name="nom"
-                        placeholder="Nom du Vendeur"
-                        required
-                    />
+                <form id="inscriptionForm" action="" method="POST">
+                    <div id="inscription">
+                        <label for="userName">Nom d'utilisateur :</label>
+                        <input type="text" id="userName" name="nom" required />
+                        <label for="firstName">Prénom :</label>
+                        <input type="text" id="firstName" name="prenom" required />
 
-                    <label for="vendeurPrenom">Prénom du Vendeur :</label>
-                    <input
-                        type="text"
-                        id="vendeurPrenom"
-                        name="prenom"
-                        placeholder="Prénom du Vendeur"
-                        required
-                    />
-
-                    <label for="vendeurEmail">Email du Vendeur :</label>
-                    <input
-                        type="email"
-                        id="vendeurEmail"
-                        name="email"
-                        placeholder="Email du Vendeur"
-                        autocomplete="email"
-                        required
-                    />
-
-                    <label for="vendeurPassword">Mot de passe :</label>
-                    <input
-                        type="password"
-                        id="vendeurPassword"
-                        name="password"
-                        placeholder="Mot de passe"
-                        autocomplete="current-password"
-                        required
-                    />
-                    <input type="password" name="password" autocomplete="current-password" required />
-
-                    <button type="submit" id="btnAddVendeur">Ajouter</button>
-                    <div id="messageContainer"></div>
+                        <label for="mdp">Mot de passe :</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                            autocomplete="current-password"
+                        />
+                        <label for="email">Email :</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            autocomplete="email"
+                        />
+                        <input type="checkbox" id="isAdmin" name="is_admin" />
+                        <button type="submit" id="btnSinscrire">S'inscrire</button>
+                    </div>
                 </form>
                 <div class="statistique"></div>
             </div>

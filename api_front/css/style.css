@@ -6,11 +6,35 @@
 body {
     /* display: flex; */
     font-family: "Poppins", sans-serif;
-    background-color: white;
+    background-image: url(../assets/backgroun.webp);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     width: 100%;
-    /* position: relative; */
+    height: 100%;
+    position: relative;
+}
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.525);
+    z-index: -1;
 }
 /* Header  */
+h1{
+    font-size: 2rem;
+    font-family:'Times New Roman', Times, serif;
+    color: rgb(255, 255, 255);
+    margin: 20px 0;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+}
 header {
     display: flex;
     flex-direction: column;
@@ -21,7 +45,7 @@ header {
     position: relative;
 }
 header nav {
-    width: 40%;
+    width: 60%;
 }
 header nav ul {
     text-align: center;
@@ -38,6 +62,7 @@ main {
     /* justify-content: center;
     align-items: flex-start; */
     padding: 20px;
+    margin: 20px;
     /* position: relative; */
 }
 
@@ -55,7 +80,6 @@ main {
     z-index: 1;
 }
 .admin h2 {
-
     margin-top: 30px;
 }
 #vendeur {
@@ -74,14 +98,14 @@ main {
     z-index: 1000;
 }
 .addMarqueResponse {
-    color: green;
+    color: rgb(20, 200, 20);
     font-weight: bold;
     text-align: center;
 }
 .addMarqueError {
     display: block;
     font-family: "Courier New", Courier, monospace;
-    font-size: 0.8rem;
+    font-size: 0.5rem;
     margin: 3px;
     color: red;
     font-weight: bold;
@@ -96,7 +120,7 @@ main {
     padding: 5px 15px;
     transition: 0.2s ease-in-out;
     cursor: pointer;
-    /* font-size: 1rem; */
+    font-size: 0.4rem;
 }
 .deleteMarqueBtn:hover {
     background-color: #ff4d4d;
@@ -156,7 +180,7 @@ input {
 }
 
 .successMessage {
-    color: green;
+    color: rgb(31, 208, 31);
     font-weight: bold;
     text-align: center;
 }
@@ -181,59 +205,61 @@ input {
 /* ------------------  NOS MARQUES  ------------------ */
 h2 {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-    font-size: 2.4rem;
-    color: brown;
+    font-size: 2rem;
+    color: rgb(255, 255, 255);
     margin: 5px 0;
     text-align: center;
 }
 a {
     text-decoration: none;
     color: rgb(214, 216, 111);
-    font-size: 2rem;
+    font-size: 1.4rem;
 }
 a:hover {
-    color: rgb(255, 200, 0);
+    color: rgb(255, 255, 255);
 }
 header h1 {
     color: rgb(214, 216, 111);
     margin: 10px 0;
 }
-/* 
-#demandesClients {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    padding: 20px;
-    background-color: burlywood;
-    border-radius: 15px;
-    margin: 20px 0;
-} */
+
 
 h3 {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
     color: brown;
     margin: 10px 0;
 }
-#stocksContainer {
+#stocksContainer  {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    width: 100%;
+    border-radius: 20px;
+    background-color: rgba(13, 43, 71, 0.704);
 }
-
+#modelesContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.supMarBtn{
+    display: flex;
+    justify-content: center;
+}
 .card {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: whitesmoke;
-    margin: 2vw 3vw;
+    margin: 1vw 1vw;
     border-radius: 5px;
-    padding: 1vw 2vw;
-    width: 300px;
-    height: 300px;
+    padding: 1vw ;
+    width: 200px;
+    height: 200px;
     transition: 0.5s ease-in-out;
     box-shadow: 0 4px 8px rgba(33, 32, 32, 0.2);
     position: relative;
@@ -249,11 +275,11 @@ h3 {
     align-items: center;
 }
 .card h3 {
-    font-size: 2rem;
-    color: rgb(39, 38, 38);
+    text-align: center;
+    font-size: 1.3rem;
+    color:rgb(197, 8, 175);
     transition: 0.5s ease-in-out;
     box-shadow: inset 0 0 0 0 rgba(39, 38, 38);
-    color: rgb(39, 38, 38);
 }
 .card:hover,
 .card2:hover {
@@ -281,13 +307,7 @@ h3 {
     transition: all 0.5s ease-in-out;
     color: white;
 }
-#modelesContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    width: 100%;
-}
+
 .card2 {
     display: flex;
     flex-direction: column;
@@ -297,23 +317,21 @@ h3 {
     margin: 2vw 3vw;
     border-radius: 5px;
     padding: 1vw 2vw;
-    width: 300px;
-    height: 500px;
+    width: 20vw;
+    height: 60vh;
     transition: 0.5s ease-in-out;
     box-shadow: 0 4px 8px rgba(46, 45, 45, 0.2);
     border: solid rgba(0, 0, 0, 0.217);
     position: relative;
 }
 span {
-    font-size: 1.2rem;
-    color: rgb(39, 38, 38);
-    margin-bottom: 25px;
-}
+    font-size: 1rem;
+    color: rgb(39, 38, 38);}
 .card2:hover {
 }
 .card2 h3 {
     text-align: center;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: rgb(117, 48, 88);
     transition: 0.5s ease-in-out;
@@ -321,9 +339,10 @@ span {
 }
 .card2 p {
 text-align: center;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
+    width: 80%;
     margin-bottom: 5px;
-    color: rgb(39, 38, 38);
+    color: rgb(31, 128, 139);
 }
 .card2 h4 {
     background-color: rgb(245, 208, 77);
@@ -332,61 +351,58 @@ text-align: center;
     padding: 6px 3px;
     width: 100px;
     text-align: center;
-    margin-top: 5px;
+    margin: 15px;
+}
+.card2 img{
+  margin:20px
 }
 .card2Modifier {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
-    /* justify-content: center; */
-    background-color: whitesmoke;
+    justify-content: space-around;
+    align-items: center;
+   background-color: rgb(4, 40, 74);
     margin: 2vw 3vw;
-    border-radius: 15px;
+    border-radius: 5px;
     padding: 1vw 2vw;
-    width: 300px;
-    height: 400px;
-    /* transition: 0.5s ease-in-out; */
-    box-shadow: 0 20px 15px 20px rgba(32, 30, 30, 0.294);
-    /* position: relative; */
+    width: 25vw;
+    height: 45vh;
     position: absolute;
-    top: 30px;
-    right: 0;
+    color: white;
     z-index: 211;
 }
-
 #modifierModele {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
     text-align: center;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 10px 0;
+    border-radius: 15px;
+    margin:10px 0;
 }
-#annulerModifierModele {
-    /* background-color: none;
+.annulerModifierModele,.supModBtn{
+    display: flex;
+    justify-content: center
+
+
+}
+#modifierModele button {
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+    margin: 5px 0;
     border: none;
+    background-color: none;
     padding: 1vw 2vw;
-    margin: 2vw;
-    font-size: 1rem;
+    margin: 1vw;
+    font-size: 0.7rem;
     cursor: pointer;
-    position: absolute;
-    top: 0;
-    right: 0;
     border-radius: 10px;
-    color: rgb(251, 0, 0); */
 }
 .deleteModeleBtn {
     background: none;
     border: none;
     padding: 1vw 2vw;
-    margin: 2vw;
+    margin: 1vw;
     cursor: pointer;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     background-color: rgb(170, 44, 5);
     border-radius: 10px;
     color: white;
@@ -396,12 +412,9 @@ text-align: center;
     background: none;
     border: none;
     padding: 1vw 2vw;
-    margin: 2vw;
+    margin: 1vw;
     cursor: pointer;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     background-color: rgb(48, 77, 73);
     border-radius: 10px;
     color: white;
@@ -423,11 +436,26 @@ text-align: center;
     background-color: rgb(13, 43, 71);
     margin: 1vw 1vw;
     border-radius: 15px;
-    padding: 10px 20px;
-    /* width: 30%; */
     height: 200px;
     transition: 0.2s ease-in-out;
+    font-size: 1.5rem;
 }
+.ajouterMarque button{
+    background-color: whitesmoke;
+    border: none    ;
+    color: rgb(13, 43, 71);
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin:10px auto;
+    cursor: pointer;
+    font-size: 1.3rem;
+    width: 150px;
+    
+}
+#addMarqueForm {
+ 
+}   
+
 .ajouterModele,
 #addModeleForm {
     display: flex;
@@ -439,7 +467,7 @@ text-align: center;
     /* gap: 10px; */
     text-align: center;
 }
-.addModeleForm select {
+#addModeleForm select {
     padding: 10px;
     text-align: center;
     border: 1px solid #ccc;
@@ -460,18 +488,27 @@ text-align: center;
     margin-bottom: 10px;
 
 }
-.annulerModifierModele {
+#annulerModifierModele {
     background-color: none;
     border: none;
     padding: 1vw 2vw;
-    margin: 2vw;
-    font-size: 1rem;
+    /* margin: 1vw; */
+    font-size: 0.8rem;
     cursor: pointer;
-    position: absolute;
     top: 0;
     right: 0;
     border-radius: 10px;
-    color: rgb(251, 0, 0);
+    background-color: rgb(170, 44, 5);
+    color: white;
+}
+#validerModifierModele{
+    background-color: rgb(0, 255, 0);
+    border: none;
+    padding: 1vw 2vw;
+    /* margin: 2vw; */
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 10px;
 }
 .addform {
     display: flex;

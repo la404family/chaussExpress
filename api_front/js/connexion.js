@@ -1,4 +1,4 @@
-const inscriptionForm = document.querySelector('#inscription');
+
 const connexionForm = document.querySelector('#connexionForm');
 const inscriptionLink = document.querySelector('#inscriptionLink');
 const btnSinscrire = document.querySelector('#btnSinscrire');
@@ -15,9 +15,11 @@ btnSinscrire.addEventListener('click', (event) => {
       event.preventDefault();
       connexionForm.style.display = 'block';
       inscriptionForm.style.display = 'none';
+      connexionForm.style.display='flex';
+      connexionForm.style.flexDirection = 'column';
 });
 croixfermer.addEventListener('click', (event) => {
       event.preventDefault();
       inscriptionForm.style.display = 'none';
-      // connexionForm.style.display = 'none';
+      // connexionForm.style.display = 'none'; 
 });

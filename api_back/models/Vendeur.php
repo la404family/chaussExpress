@@ -36,18 +36,18 @@ class Vendeur {
     }
 
     // Créer un nouveau vendeur
-    public function create(string $nom, string $prenom, string $mail, string $password_hash, bool $is_admin = false): bool
+    public function create(string $nom, string $prenom, string $email, string $password, bool $is_admin = false): bool
     {
         try {
-            $query = "INSERT INTO {$this->table} (nom, prenom, mail, password_hash, is_admin) 
-                      VALUES (:nom, :prenom, :mail, :password_hash, :is_admin)";
+            $query = "INSERT INTO {$this->table} (nom, prenom, email, password, is_admin) 
+                      VALUES (:nom, :prenom, :email, :password, :is_admin)";
             $stmt = $this->pdo->prepare($query);
             return $stmt->execute([
                 'nom'           => $nom,
                 'prenom'        => $prenom,
-                'mail'          => $mail,
-                'password_hash' => $password_hash,
-                'is_admin'      => $is_admin ? 1 : 0
+                'email'        => $email,
+                'password'      => $password,
+                'is_admin'      => $is_admin ? 1 : 0 
             ]);
         } catch (\PDOException $e) {
             throw new \Exception("Erreur lors de la création du vendeur : " . $e->getMessage());
@@ -55,20 +55,20 @@ class Vendeur {
     }
 
     // Mettre à jour un vendeur
-    public function update(int $id, string $nom, string $prenom, string $mail, string $password_hash, bool $is_admin): bool
+    public function update(int $id, string $nom, string $prenom, string $email, string $password, bool $is_admin): bool
     {
         try {
             $query = "UPDATE {$this->table} 
-                      SET nom = :nom, prenom = :prenom, mail = :mail, 
-                          password_hash = :password_hash, is_admin = :is_admin
+                      SET nom = :nom, prenom = :prenom, email = :email, 
+                          password = :password, is_admin = :is_admin
                       WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
             return $stmt->execute([
                 'id'            => $id,
                 'nom'           => $nom,
                 'prenom'        => $prenom,
-                'mail'          => $mail,
-                'password_hash' => $password_hash,
+                'email'        => $email,
+                'password'      => $password,
                 'is_admin'      => $is_admin ? 1 : 0
             ]);
         } catch (\PDOException $e) {
@@ -89,14 +89,35 @@ class Vendeur {
     }
 
     // Récupérer les demandes (clients_id depuis table `demandes`)
-    public function getDemandes(): array
-    {
-        try {
-            $query = "SELECT clients_id FROM demandes ORDER BY id DESC";
-            $stmt = $this->pdo->query($query);
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            throw new \Exception("Erreur lors de la récupération des demandes : " . $e->getMessage());
-        }
-    }
+    // Dans Vendeur.php
+public function getAllWithDemandesCount() {
+    $stmt = $this->pdo->query("
+        SELECT v.*, COUNT(d.id) AS nb_demandes
+        FROM vendeurs v
+        LEFT JOIN demandes d ON d.vendeur_id = v.id
+        GROUP BY v.id
+    ");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+public function getByIdWithDemandesCount($id) {
+    $stmt = $this->pdo->prepare("
+        SELECT v.*, COUNT(d.id) AS nb_demandes
+        FROM vendeurs 
+        LEFT JOIN demandes  ON vendeur_id = id
+        WHERE id = ?
+        GROUP BY id
+    ");
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+}
+// tester
+
+
+// // Initialize the database connection
+// $vendeur= new Vendeur($database->getConnection());
+// // Example usage
+// $vendeurs = $vendeur->getAll();
+// var_dump($vendeurs);

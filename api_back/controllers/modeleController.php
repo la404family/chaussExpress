@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../models/Modele.php';
 
 
-// Créer une class pour le contrôleur pour gérer la partie logique
+// Créer une class pour le contrôleur pour gérer la partie logique et attribuer la connexion à la BDD
 class ModeleController {
       private $pdo;
       private $modeles;

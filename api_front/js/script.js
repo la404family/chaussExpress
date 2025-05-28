@@ -1,4 +1,7 @@
 // Récupérer les données de la marque avec fetch
+
+
+
 function getMarquesAll() {
     const stocksContainer = document.querySelector("#stocksContainer");
     fetch("http://localhost:3000/api_back/index.php/marques", {
@@ -18,10 +21,12 @@ function getMarquesAll() {
                 card.innerHTML = `
                     <h3>${marque.marque}</h3>
                     <p>ID: ${marque.id}</p>
+                    <div class="supMarBtn">
                     <button class="btnModifier" id="btnModifier-${marque.id}">Modifier</button>
                     <button class="btnSupprimer" id="btnSupprimer-${marque.id}">Supprimer</button>
-                    <div class="messageContainerModifier" id="messageContainerModifier-${marque.id}"></div>
-                    <div class="messageContainerSupprimer" id="messageContainerSupprimer-${marque.id}"></div>
+                    </div>
+                        <div class="messageContainerModifier" id="messageContainerModifier-${marque.id}"></div>
+                        <div class="messageContainerSupprimer" id="messageContainerSupprimer-${marque.id}"></div>
                 `;
                 stocksContainer.appendChild(card);
 
@@ -31,18 +36,18 @@ function getMarquesAll() {
                 btnSupprimer.addEventListener("click", () => {
                     const messageContainerSupprimer = card.querySelector(".messageContainerSupprimer");
                     if (confirm(`Êtes-vous sûr de vouloir supprimer la marque ${marque.marque} ? Tous les modèles associés seront également supprimés.`)) {
-                        deleteMarque(marque.id);
-                        messageContainerSupprimer.textContent = `La marque ${marque.marque} a été supprimée avec succès !`;
+                        messageContainerSupprimer.innerHTML = `La marque <strong>${marque.marque}</strong> a été supprimée avec succès !`;
                         messageContainerSupprimer.style.color = "green";
                         setTimeout(() => {
                             card.remove(); // Supprime la carte de la marque
                         }, 3000); // Supprime le message après 3 secondes
+                        deleteMarque(marque.id);
                     } else {
-                        messageContainerSupprimer.textContent = `Suppression annulée.`;
+                        messageContainerSupprimer.innerHTML = `Suppression annulée.`;
                         messageContainerSupprimer.style.color = "red";
                         setTimeout(() => {
-                            messageContainerSupprimer.textContent = "";
-                        }, 3000); // Supprime le message après 3 secondes
+                            messageContainerSupprimer.innerHTML = "";
+                        }, 3000);
                     }
                 });
 
@@ -51,38 +56,60 @@ function getMarquesAll() {
                 btnModifier.addEventListener("click", () => {
                     const formModifier = document.createElement("form");
                     formModifier.innerHTML = `
-                        <input type="text" value="${marque.marque}" />
+                        <input type="text" value="${marque.marque}" /> 
                         <button type="button" class="btnValiderModifier">Valider</button>
                         <button type="button" class="annulerModifier">❌</button>
-                        <div class="messageContainerModifier" id="messageContainerModifierAnnuler-${marque.id}"></div>
+                        <div class="messageContainerModifierValiver" id="messageContainerModifierAnnuler-${marque.id}"></div>
                     `;
 
                     card.innerHTML = "";
                     card.appendChild(formModifier);
                     const btnValiderModifier = formModifier.querySelector(".btnValiderModifier");
                     const btnAnnulerModifier = formModifier.querySelector(".annulerModifier");
-
+    
                     btnValiderModifier.addEventListener("click", (e) => {
                         e.preventDefault();
                         const newMarque = formModifier.querySelector("input[type='text']").value;
                         if (newMarque) {
+                            
+                            formModifier.querySelector(".messageContainerModifierValiver").textContent = `La marque a été modifiée avec succès !`;
+                            formModifier.querySelector(".messageContainerModifierValiver").style.color = "green";
+                            setTimeout(() => {
+                                formModifier.querySelector(".messageContainerModifierValiver").textContent = "";
+                                card.innerHTML = `
+                                <h3>${marque.marque}</h3>
+                                <p>ID: ${marque.id}</p>
+                                <div class="supMarBtn">
+                                <button class="btnModifier" id="btnModifier-${marque.id}">Modifier</button>
+                                <button class="btnSupprimer" id="btnSupprimer-${marque.id}">Supprimer</button>
+                                </div>
+                                <div class="messageContainerModifier" id="messageContainerModifier-${marque.id}"></div>
+                                <div class="messageContainerSupprimer" id="messageContainerSupprimer-${marque.id}"></div>
+                                `;
+                                window.location.reload(); // Rafraîchit la page pour afficher les modifications
+                            }, 3000);
                             updateMarque(marque.id, newMarque);
                         }
                     });
 
                     btnAnnulerModifier.addEventListener("click", () => {
-                        card.innerHTML = `
-                            <h3>${marque.marque}</h3>
-                            <p>ID: ${marque.id}</p>
-                            <button class="btnModifier" id="btnModifier-${marque.id}">Modifier</button>
-                            <button class="btnSupprimer" id="btnSupprimer-${marque.id}">Supprimer</button>
-                        `;
                         const messageContainerModifierAnnuler = card.querySelector(`#messageContainerModifierAnnuler-${marque.id}`);
                         messageContainerModifierAnnuler.textContent = "Modification annulée.";
                         messageContainerModifierAnnuler.style.color = "red";
                         setTimeout(() => {
                             messageContainerModifierAnnuler.textContent = "";
+                                card.innerHTML = `
+                    <h3>${marque.marque}</h3>
+                    <p>ID: ${marque.id}</p>
+                    <div class="supMarBtn">
+                    <button class="btnModifier" id="btnModifier-${marque.id}">Modifier</button>
+                    <button class="btnSupprimer" id="btnSupprimer-${marque.id}">Supprimer</button>
+                    </div>
+                        <div class="messageContainerModifier" id="messageContainerModifier-${marque.id}"></div>
+                        <div class="messageContainerSupprimer" id="messageContainerSupprimer-${marque.id}"></div>
+                `;
                         }, 3000);
+
                     });
                 });
 
@@ -181,6 +208,8 @@ function updateMarque(id, newMarque) {
 updateMarque();
 
 
+//Fonction pour créer une nouvelle marque au clic du bouton
+//Fonction pour créer une nouvelle marque au clic du bouton
 //Fonction pour créer une nouvelle marque au clic du bouton
 const btnAjoutMarque = document.querySelector("#btnAjoutMarque");
 btnAjoutMarque.addEventListener("click", (e) => {

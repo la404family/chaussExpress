@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Demandes clients</title>
+      <link rel="stylesheet" href="../css/style.css">
+      <link rel="stylesheet" href="../css/demandes.css">
+</head>
+<body>
+      <header>
+            <h1>Chauss'Express - Demandes clients</h1>
+            <nav>
+                  <ul>
+                        <li><a href="../html/index.html">Accueil</a></li>
+                        <li><a href="../html/clients.html">Clients</a></li>
+                        <li><a href="../html/vendeurs.html">Vendeurs</a></li>
+                        <li><a href="../html/demandes.html">Demandes</a></li>
+                  </ul>
+            </nav>
+      </header>
+
+      <main>
+            <div id="demandesContainer">
+                  <h2>Demandes des clients</h2>
+                  <div id="demandesList">
+                        <!-- Les demandes seront injectées ici par JS -->
+                  </div>
+            </div>
+
+            <div id="formulaireDemande">
+                  
+                  <h2>Faire une demande</h2>
+                  <form id="demandeForm" action="" method="post">
+                        <label for="clientName">Nom du client :</label>
+                        <input type="text" id="clientName" name="clientName" required>
+                        <label for="prenom">Prénom du client :</label>
+                        <input type="text" id="prenom" name="prenom" required>
+                        <label for="clientEmail">Email du client :</label>
+                        <input type="email" id="clientEmail" name="email" required>
+                        <label for="pointure_demandee">Pointure demandée :</label>
+                        <select name="modele_list" id="modele_list" required>
+                            <option value="">Sélectionner un modèle</option>
+                        </select>
+                        <select id="pointure_demandee" name="pointure_demandee" required>
+                            <option value="">Sélectionner une pointure</option>
+                        </select>
+                        <label for="quantite">Quantité :</label>
+                        <input type="number" id="quantite" name="quantite" min="1" required>
+
+                        <button type="submit" id="btnEnvoyerDemande">Envoyer la demande</button>
+                  </form>
+            </div>
+      </main>
+
+      <script src="../js/demandes.js"></script>
+</body>
+</html>

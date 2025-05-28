@@ -102,7 +102,24 @@ class Modele {
             throw new Exception("Erreur lors de la mise à jour du modèle: " . $e->getMessage());
         }
     }
+    // Récupérer les modèles par marque
+    public function getByMarqueId(int $marque_id): array
+    {
+        try {
+            $query = "SELECT * FROM {$this->table} WHERE marque_id = :marque_id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['marque_id' => $marque_id]);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur lors de la récupération des modèles par marque: " . $e->getMessage());
+        }
+    }
 }
+
+//
+
+
+
 // $modele = new Modele($pdo);
 // require_once '../config/Database.php';
 // require_once '../models/Modele.php';

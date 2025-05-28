@@ -21,19 +21,23 @@ function getModeles(id) {
                     <span class="msgSuppression" id="messageContainerSupprimerModele"></span>
                     <span class="msgModification" id="messageContainerModifierModele"></span>
                     <span class="msgModele"></span>
+                    <div class="supModBtn">
                     <button class="deleteModeleBtn">Supprimer</button>
-                    <button class="editModeleBtn">Modifier</button>
+                    <button class="editModeleBtn">Modifier</button></div>
                     <form method="put" action="" id="modifierModele" class="modifierModele" style="display: none;">
                         <input type="text" id="modele" name="modele" value="${modele.modele}" required />
                         <input type="text" id="description" name="description" value="${modele.description}" required />
                         <input type="text" id="prix" name="prix" value="${modele.prix}" required />
+                        <div>
                         <label for="image">Image :</label>
                         <input type="file" id="image" name="image" accept="image/*" />
-                        <button type="submit">Valider</button>
+                        <div class="annulerModifierModele">
+                        <button id="validerModifierModele" type="submit">Valider</button>
                         <div id="messageContainerModifierModele"></div>
-                        <button id="annulerModifierModele" class="annulerModifierModele">❌</button>
+                        <button id="annulerModifierModele" class="annulerModifierModele">Annuler</button></div>
                 `;
                 modelesContainer.appendChild(cardModele);
+             
                 // Je ajoute les événements pour les boutons Modifier et Supprimer
                 // Supprimer un modèle
                 // Supprimer un modèle
@@ -69,19 +73,22 @@ function getModeles(id) {
                 // Modifier un modèle
                 // Modifier un modèle
                 const editModeleBtn = cardModele.querySelector(".editModeleBtn");
+                // console.log(editModeleBtn);
                 editModeleBtn.addEventListener("click", () => {
                     const formModifierModele = cardModele.querySelector("#modifierModele");
                     formModifierModele.style.display = "block";
-                    formModifierModele.classList.add("card2Modifier");
                     editModeleBtn.style.display = "none";
                     deleteModeleBtn.style.display = "none";
-
+                    formModifierModele.classList.add("card2Modifier");
+                    
                     const annulerModifierModele = cardModele.querySelector("#annulerModifierModele");
+                    console.log(annulerModifierModele);
                     annulerModifierModele.addEventListener("click", (event) => {
                         event.preventDefault();
                         formModifierModele.style.display = "none";
                         editModeleBtn.style.display = "block";
                         deleteModeleBtn.style.display = "block";
+                        
                         const messageContainerModifierModele = cardModele.querySelector(
                             "#messageContainerModifierModele"
                         );
@@ -91,16 +98,27 @@ function getModeles(id) {
                             messageContainerModifierModele.textContent = "";
                         }, 3000);
                     });
+                    const validerModifierModele = cardModele.querySelector("#validerModifierModele");
+                    console.log(validerModifierModele);
 
-                    formModifierModele.addEventListener("submit", (event) => {
+                    validerModifierModele.addEventListener("click", (event) => {
+                        const formModifierModele = cardModele.querySelector("#modifierModele");
+                        formModifierModele.style.display = "none";
+                         editModeleBtn.style.display = "block";
+                        deleteModeleBtn.style.display = "block";
+
                         event.preventDefault();
                         if (!formModifierModele.modele.value || 
                             !formModifierModele.description.value || 
-                            !formModifierModele.prix.value) {
+                            !formModifierModele.prix.value || 
+                            !formModifierModele.image.files[0]
+                    ) {
                             const messageContainerModifierModele = cardModele.querySelector(
                                 "#messageContainerModifierModele"
                             );
                             messageContainerModifierModele.textContent = data.message;
+                            messageContainerModifierModele.style.color = "red";
+                            messageContainerModifierModele.textContent = "Veuillez remplir tous les champs.";
                             messageContainerModifierModele.style.color = "red";
                             setTimeout(() => {
                                 messageContainerModifierModele.textContent = "";
@@ -109,6 +127,9 @@ function getModeles(id) {
                             const messageContainerModifierModele = cardModele.querySelector(
                                 "#messageContainerModifierModele"
                             );
+                            formModifierModele.style.display = "none";
+                            editModeleBtn.style.display = "block";
+                            deleteModeleBtn.style.display = "block";
                             messageContainerModifierModele.textContent = "Modèle mis à jour avec succès !";
                             messageContainerModifierModele.style.color = "green";
                             const newModele = formModifierModele.modele.value;
@@ -118,8 +139,8 @@ function getModeles(id) {
                             
                             setTimeout(() => {
                                 messageContainerModifierModele.textContent = "";
-                                updateModele(modele.id, newModele, newDescription, newPrix, newImage);
                             }, 3000);   
+                            updateModele(modele.id, newModele, newDescription, newPrix, newImage);
                         }
                     });
                 });
@@ -171,37 +192,32 @@ deleteModele();
 
 // Fonction pour modifier un modèle au click d'un boutton dans un formulaire injecté dans le DOM
 function updateModele(id, newModele, newDescription, newPrix, newImage) {
-    fetch(`http://localhost:3000/api_back/index.php/modeles?id=${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            id: id,
-            modele: newModele,
-            description: newDescription,
-            prix: newPrix,
-            image: newImage,
-        }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            const messageContainerModifierModele = document.querySelector(
-                "#messageContainerModifierModele"
+  const form = document.querySelector("#addModeleForm");
+    const formData = new FormData(form); // Créer un FormData pour gérer les fichiers et les champs du formulaire
+    const messageContainer = document.querySelector("#messageContainerModifierModele");
+
+  fetch("http://localhost:3000/api_back/index.php/modeles", {
+    method: "POST", 
+    body: formData,
+    headers: {
+      "Accept": "application/json",
+      // "Content-Type": "application/json", ( pas pour )
+    }
+  })
+      .then((response) => response.json())
+      .then((data) => {
+          console.log(data);
+          const messageContainer = document.querySelector(
+              "#messageContainerModifierModele"
             );
             if (data.success) {
-                messageContainerModifierModele.textContent = data.message;
-                messageContainerModifierModele.style.color = "green";
+                messageContainer.textContent = data.message;
+                messageContainer.style.color = "green";
                 setTimeout(() => {
-                    messageContainerModifierModele.textContent = "";
+                    messageContainer.textContent = "";
                 }, 3000);
             } else {
-                messageContainerModifierModele.textContent = data.message;
-                messageContainerModifierModele.style.color = "red";
-                setTimeout(() => {
-                    messageContainerModifierModele.textContent = "";
-                }, 3000);
+              return data.message;
             }
         })
         .catch((error) => {
@@ -232,11 +248,14 @@ function chargerMarques() {
     .catch((err) => console.error("Erreur de récupération des marques :", err));
 }
 
-chargerMarques(); // Appel de la fonction pour charger les marques
-
+chargerMarques();
 
 // Ajouter un modèle
 // Ajouter un modèle
+// Ajouter un modèle
+// Ajouter un modèle
+// Ajouter un modèle
+
 const addModeleForm = document.querySelector("#addModeleForm");
 addModeleForm.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -251,16 +270,16 @@ addModeleForm.addEventListener("submit", function (e) {
     headers: {
       "Accept": "application/json",
       // "Content-Type": "application/json", ( pas pour )
-    },body: formData, 
+    },
   })
     .then((res) => res.json())
     .then((data) => {
+        console.log(data);
       if (data.success) {
         messageContainer.textContent = data.message;
         messageContainer.style.color = "green";
         setTimeout(() => {
           messageContainer.textContent = "";
-          form.reset(); 
         }, 3000);
       } else {
         messageContainer.textContent = data.message;
@@ -271,10 +290,10 @@ addModeleForm.addEventListener("submit", function (e) {
       }
     })
     .catch((err) => {
-      messageContainer.textContent = "Erreur lors de l'envoi du modèle.";
-      messageContainer.style.color = "red";
-      console.error("Erreur fetch :", err);
+        messageContainer.textContent = "Erreur lors de l'envoi du modèle.";
+        messageContainer.style.color = "red";
         setTimeout(() => {
+        console.error("Erreur fetch :", err);
             messageContainer.textContent = "";
         }, 3000);
     });

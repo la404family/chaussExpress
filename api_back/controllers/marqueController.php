@@ -130,7 +130,7 @@ class MarqueController {
                 exit;
             }
 
-            // ✅ Appel correct ici
+
             $success = $this->marques->update($id, $marque);
 
             if ($success) {
