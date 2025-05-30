@@ -37,7 +37,8 @@ function getModeles(id) {
                         <button id="annulerModifierModele" class="annulerModifierModele">Annuler</button></div>
                 `;
                 modelesContainer.appendChild(cardModele);
-             
+              
+
                 // Je ajoute les événements pour les boutons Modifier et Supprimer
                 // Supprimer un modèle
                 // Supprimer un modèle
@@ -108,11 +109,14 @@ function getModeles(id) {
                         deleteModeleBtn.style.display = "block";
 
                         event.preventDefault();
-                        if (!formModifierModele.modele.value || 
-                            !formModifierModele.description.value || 
-                            !formModifierModele.prix.value || 
-                            !formModifierModele.image.files[0]
-                    ) {
+                       const imageInput = formModifierModele.querySelector("#image");
+
+if (!formModifierModele.modele.value || 
+    !formModifierModele.description.value || 
+    !formModifierModele.prix.value || 
+    !imageInput.files[0]
+                        ) {
+                            console.log(formModifierModele.modele.value, formModifierModele.description.value, formModifierModele.prix.value, formModifierModele.image.files[0]);
                             const messageContainerModifierModele = cardModele.querySelector(
                                 "#messageContainerModifierModele"
                             );
@@ -121,6 +125,7 @@ function getModeles(id) {
                             messageContainerModifierModele.textContent = "Veuillez remplir tous les champs.";
                             messageContainerModifierModele.style.color = "red";
                             setTimeout(() => {
+                                window.location.reload();
                                 messageContainerModifierModele.textContent = "";
                             }, 3000);
                         }else{
@@ -138,6 +143,7 @@ function getModeles(id) {
                             const newImage = formModifierModele.image.files[0] ? formModifierModele.image.files[0].name : modele.image;
                             
                             setTimeout(() => {
+                                window.location.reload();
                                 messageContainerModifierModele.textContent = "";
                             }, 3000);   
                             updateModele(modele.id, newModele, newDescription, newPrix, newImage);
@@ -147,7 +153,7 @@ function getModeles(id) {
             });
         })
         .catch((error) => {
-            console.error("Une erreur est survenue:", error);
+          error = `${error.message}`;
         });
 }
 getModeles();
@@ -191,41 +197,49 @@ function deleteModele(id) {
 deleteModele();
 
 // Fonction pour modifier un modèle au click d'un boutton dans un formulaire injecté dans le DOM
-function updateModele(id, newModele, newDescription, newPrix, newImage) {
-  const form = document.querySelector("#addModeleForm");
-    const formData = new FormData(form); // Créer un FormData pour gérer les fichiers et les champs du formulaire
-    const messageContainer = document.querySelector("#messageContainerModifierModele");
+function updateModele(id) {
+    // const formData = new FormData();
+    // formData.append("_method", "PosT"); 
+    // formData.append("id", id);
+    // formData.append("modele", document.querySelector("#modele").value);
+    // formData.append("description", document.querySelector("#description").value);
+    // formData.append("prix", document.querySelector("#prix").value);
 
-  fetch("http://localhost:3000/api_back/index.php/modeles", {
-    method: "POST", 
-    body: formData,
-    headers: {
-      "Accept": "application/json",
-      // "Content-Type": "application/json", ( pas pour )
-    }
-  })
-      .then((response) => response.json())
-      .then((data) => {
-          console.log(data);
-          const messageContainer = document.querySelector(
-              "#messageContainerModifierModele"
-            );
-            if (data.success) {
-                messageContainer.textContent = data.message;
-                messageContainer.style.color = "green";
-                setTimeout(() => {
-                    messageContainer.textContent = "";
-                }, 3000);
-            } else {
-              return data.message;
-            }
-        })
-        .catch((error) => {
-            // Afficher un message d'erreur
-         error = `${error.message}`;
-        });
+    // const imageInput = document.querySelector("#image");
+    // if (imageInput.files[0]) {
+    //     formData.append("image", imageInput.files[0]);
+    // }
+
+    fetch("http://localhost:3000/api_back/index.php/modeles", {
+        method: "PUT", // POST obligatoire pour envoyer des fichiers
+        headers: {
+            "Content-Type": "application/json",
+        },body: JSON.stringify({
+            id: id,
+            modele: document.querySelector("#modele").value,
+            description: document.querySelector("#description").value,
+            prix: document.querySelector("#prix").value,
+            image: document.querySelector("#image").files[0] ? document.querySelector("#image").files[0].name : null,
+        }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        const messageContainerModifierModele = document.querySelector("#messageContainerModifierModele");
+        if (data.success) {
+            messageContainerModifierModele.textContent = "Modèle mis à jour avec succès!";
+            messageContainerModifierModele.style.color = "green";
+        } else {
+            messageContainerModifierModele.textContent = data.message;
+            messageContainerModifierModele.style.color = "red";
+        }
+        setTimeout(() => {
+            messageContainerModifierModele.textContent = "";
+        }, 3000);
+    })
+    .catch((err) => console.error("Erreur fetch updateModele:", err));
 }
-updateModele(); // Exemple d'appel de la fonction pour mettre à jour un modèle
+
+// updateModele(); // Exemple d'appel de la fonction pour mettre à jour un modèle
 
 
 
@@ -259,7 +273,6 @@ chargerMarques();
 const addModeleForm = document.querySelector("#addModeleForm");
 addModeleForm.addEventListener("submit", function (e) {
   e.preventDefault();
-
     const form = document.querySelector("#addModeleForm");
     const formData = new FormData(form); // Créer un FormData pour gérer les fichiers et les champs du formulaire
     const messageContainer = document.querySelector("#messageContainerAjoutModele");
@@ -279,6 +292,7 @@ addModeleForm.addEventListener("submit", function (e) {
         messageContainer.textContent = data.message;
         messageContainer.style.color = "green";
         setTimeout(() => {
+            e.preventDefault();
           messageContainer.textContent = "";
         }, 3000);
       } else {
@@ -293,11 +307,51 @@ addModeleForm.addEventListener("submit", function (e) {
         messageContainer.textContent = "Erreur lors de l'envoi du modèle.";
         messageContainer.style.color = "red";
         setTimeout(() => {
-        console.error("Erreur fetch :", err);
+            console.error("Erreur fetch :", err);
             messageContainer.textContent = "";
         }, 3000);
     });
-});
+    
+}); // Ajout d'un délai de 3 secondes avant l'envoi du formulaire
+
+
+// Selectionner les modèles d'une marque
+function getModelesByMarque(marqueId) {
+    fetch(`http://localhost:3000/api_back/index.php/modeles`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data); 
+            data.data.forEach((modele) => {
+                console.log(modele);
+                const cardModele = document.createElement("div");
+                const modelesContainer = document.querySelector("#modelesContainer");
+                modelesContainer.appendChild(cardModele);
+            });
+        })
+        .catch((error) => {
+                const messageContainerAjoutmarque = document.querySelector(
+                    "#messageContainerAjoutmarque"
+                );  
+                messageContainerAjoutmarque.textContent = `Erreur : ${error.message}`;
+                messageContainerAjoutmarque.style.color = "red";
+                setTimeout(() => {
+                    messageContainerAjoutmarque.textContent = "";
+                }, 3000); // Supprime le message après 3 secondes
+                console.error("Erreur lors de la création de la marque :", error);
+                marqueInput.value = ""; // Réinitialise le champ de saisie
+            });
+
+}
+getModelesByMarque(); 
+
+
+
+
 
 // // ---------------------- AFFICHER LES MARQUES
 // // ---------------------- AFFICHER LES MARQUES

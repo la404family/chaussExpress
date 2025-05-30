@@ -1,6 +1,11 @@
 <?php
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 // J'ajoute les header CORS pour permettre d'appeler l'API depuis le front
 header('Content-Type: application/json; charset=utf-8');
+header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, DELETE,PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -43,6 +48,16 @@ switch ($resource) {
     case 'demandes':
         require_once __DIR__ . '/Controllers/demandeController.php';
         $controller = new DemandeController($db);
+        $controller->handleRequest($method, $data);
+        break;
+    // case 'clients':
+    //     require_once __DIR__ . '/Controllers/clientController.php';
+    //     $controller = new ClientController($db);
+    //     $controller->handleRequest($method, $data);
+    //     break;
+    case 'pointures_quantites':
+        require_once __DIR__ . '/Controllers/pointureQuantiteController.php';
+        $controller = new PointureQuantiteController($db);
         $controller->handleRequest($method, $data);
         break;
     default:

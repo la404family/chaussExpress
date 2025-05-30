@@ -39,15 +39,15 @@ class Vendeur {
     public function create(string $nom, string $prenom, string $email, string $password, bool $is_admin = false): bool
     {
         try {
-            $query = "INSERT INTO {$this->table} (nom, prenom, email, password, is_admin) 
-                      VALUES (:nom, :prenom, :email, :password, :is_admin)";
+            $query = "INSERT INTO {$this->table} (nom, prenom, email, password_hash, is_admin) 
+                      VALUES (:nom, :prenom, :email, :password_hash, :is_admin)";
             $stmt = $this->pdo->prepare($query);
             return $stmt->execute([
                 'nom'           => $nom,
                 'prenom'        => $prenom,
                 'email'        => $email,
                 'password'      => $password,
-                'is_admin'      => $is_admin ? 1 : 0 
+                'is_admin'      => $is_admin ? 1 : 0
             ]);
         } catch (\PDOException $e) {
             throw new \Exception("Erreur lors de la création du vendeur : " . $e->getMessage());
@@ -95,14 +95,14 @@ public function getAllWithDemandesCount() {
         SELECT v.*, COUNT(d.id) AS nb_demandes
         FROM vendeurs v
         LEFT JOIN demandes d ON d.vendeur_id = v.id
-        GROUP BY v.id
+        GROUP BY v.id ORDER BY nb_demandes DESC
     ");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 public function getByIdWithDemandesCount($id) {
     $stmt = $this->pdo->prepare("
-        SELECT v.*, COUNT(d.id) AS nb_demandes
+        SELECT * COUNT(id) AS nb_demandes
         FROM vendeurs 
         LEFT JOIN demandes  ON vendeur_id = id
         WHERE id = ?

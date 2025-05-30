@@ -24,17 +24,26 @@ class ModeleController {
                 
                 case 'GET':
                     if (isset($_GET['id'])) {
-                        $result = $this->modeles->getById($_GET['id']);
+                        $result = $this->modeles->getByMarqueId($_GET['id']);
+                        
+
                     } 
                     else {
                         $result = $this->modeles->getAllModeles();
                     }
-                  echo json_encode(['success' => true,'data' => $result
-]);
+                  echo json_encode(['success' => true,'data' => $result]);
+                    exit;
                     break;
+                     if (isset($_GET['marque_id'])) {
+        $marqueId = (int) $_GET['marque_id'];
+        $result = $this->modeles->getModelesByMarqueId($marqueId);
+        echo json_encode(['success' => true, 'data' => $result]);
+        exit;
+                     }
                     
-                 case 'POST':
-    // Vérifier que tous les champs sont présents
+                case 'POST':
+
+    // Vérification des champs
     if (
         !empty($_POST['modele']) &&
         !empty($_POST['description']) &&
@@ -42,21 +51,36 @@ class ModeleController {
         !empty($_POST['marque_id']) &&
         isset($_FILES['image']) && $_FILES['image']['error'] === 0
     ) {
-        // Sécurisation des champs
+        // Sécurisation des données
         $modele = htmlspecialchars(strip_tags(trim($_POST['modele'])));
         $description = htmlspecialchars(strip_tags(trim($_POST['description'])));
         $prix = htmlspecialchars(strip_tags(trim($_POST['prix'])));
         $marque_id = (int) $_POST['marque_id'];
 
-        // Gestion de l’image
-        $imageTmp = $_FILES['image']['tmp_name'];
-        // La variable $imageName contient le nom de l'image et base name permet de recuperer le nom de fichier pour eviter les erruers
         $imageName = basename($_FILES['image']['name']);
         $uploadDir = __DIR__ . '/../uploads/';
-        // Le chemin complet pour le téléchargement de l'image
         $uploadPath = $uploadDir . $imageName;
-// move_uploaded_file() permet de déplacer le fichier téléchargé dans le dossier 
-        if (move_uploaded_file($imageTmp, $uploadPath)) {
+
+        // Vérifier si le modèle existe déjà (par nom)
+        $modeleExiste = $this->modeles->getByName($modele);
+        if ($modeleExiste) {
+            echo json_encode(['success' => false, 'message' => 'Le modèle existe déjà']);
+            exit;
+        }
+
+        // Vérification des longueurs
+        if (
+            strlen($modele) < 2 || strlen($modele) > 30 ||
+            strlen($description) < 20 || strlen($description) > 100 ||
+            strlen($prix) < 1 || strlen($prix) > 10 ||
+            strlen($imageName) < 2 || strlen($imageName) > 150
+        ) {
+            echo json_encode(['success' => false, 'message' => 'Un ou plusieurs champs ont une longueur invalide']);
+            exit;
+        }
+
+        // Enregistrement de l'image
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
             $success = $this->modeles->createModele($modele, $description, $prix, $imageName, $marque_id);
             echo json_encode([
                 'success' => $success,
@@ -66,112 +90,179 @@ class ModeleController {
             echo json_encode(['success' => false, 'message' => 'Erreur lors du téléchargement de l\'image']);
         }
 
-        // Vérifier si le modèle existe déjà
-        $modeleNom = htmlspecialchars(strip_tags(trim($data['modele'])));
-        $modelePresent = $this->modeles->getById($modeleNom);
-                        if (!$modelePresent) {
-                            echo json_encode(['success' => false, 'message' => 'Le modèle existe déjà']);
-                            exit;
-                        } 
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Champs manquants ou image invalide']);
+    }
 
-                        // Vérifier la longueur valide
-                      if (strlen($modele) < 2 || strlen($modele) > 30 || strlen($description) < 20 || strlen($description) > 100 || strlen($prix) < 1 || strlen($prix) > 10 || strlen($imageName) < 2 || strlen($imageName) > 150) {
-                                echo json_encode(['success' => false, 'message' => 'Le modèle ou un champ a une longueur invalide']);
-                                exit;
-                            }
-                            $succes = $this->modeles->createModele($modele, $description, $prix, $imageName, $marque_id);
-                            echo json_encode([
-                                'success' => $succes,
-                                'message' => $succes ? 'Modèle ajouté avec succès' : 'Erreur lors de l\'ajout du modèle'
-                            ]);
-                            exit;
+    exit;
+                    break;
 
-                            } else {
-                                echo json_encode(['success' => false, 'message' => 'Champs manquants']);
-                                exit;
-                            }
-                                            break;
-
-            case 'DELETE':
-                    if(isset($_GET['id'])) {
-                        $succes = $this->modeles->delete($_GET['id']);
-                     echo json_encode([
-    'success' => true,
-    'data' => $succes
-]);
+                case 'DELETE':
+                    if (isset($_GET['id'])) {
+                        $success = $this->modeles->delete($_GET['id']);
+                        echo json_encode(['success' => $success]);
                     } else {
-                    echo json_encode([
-    'success' => false,
-    'message' => 'Id manquant pour la suppression du modèle.'
-]);
+                        echo json_encode(['success' => false, 'message' => 'ID manquant pour suppression']);
                     }
                     break;
 
-           case 'PUT':
-    // Vérification des champs obligatoires
-   if (
+
+       case 'PUT':
+// Récupération des données PUT
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method']) && $_POST['_method'] === 'PUT') {
+    // Vérification des champs
+    if (
+        isset($_POST['id'], $_POST['modele'], $_POST['description'], $_POST['prix'], $_POST['marque_id']) &&
+        !empty($_POST['id']) &&
         !empty($_POST['modele']) &&
         !empty($_POST['description']) &&
         !empty($_POST['prix']) &&
-        !empty($_POST['marque_id']) &&
-        isset($_FILES['image']) && $_FILES['image']['error'] === 0
+        !empty($_POST['marque_id'])
     ) {
-        // Sécurisation des champs
+        // Sécurisation
+        $id = (int) $_POST['id'];
         $modele = htmlspecialchars(strip_tags(trim($_POST['modele'])));
         $description = htmlspecialchars(strip_tags(trim($_POST['description'])));
         $prix = htmlspecialchars(strip_tags(trim($_POST['prix'])));
         $marque_id = (int) $_POST['marque_id'];
+        
 
-        // Gestion de l’image
-        $imageTmp = $_FILES['image']['tmp_name'];
-        $imageName = basename($_FILES['image']['name']);
-        $uploadDir = __DIR__ . '/../uploads/';
-        $uploadPath = $uploadDir . $imageName;
-
-        if (move_uploaded_file($imageTmp, $uploadPath)) {
-            $success = $this->modeles->createModele($modele, $description, $prix, $imageName, $marque_id);
-            echo json_encode([
-                'success' => $success,
-                'message' => $success ? 'Modèle ajouté avec succès' : 'Erreur lors de l\'ajout du modèle'
-            ]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Erreur lors du téléchargement de l\'image']);
+        // Vérification du modèle existant
+        $modeleExist = $this->modeles->getById($id);
+        if (!$modeleExist) {
+            echo json_encode(['success' => false, 'message' => 'Le modèle n\'existe pas']);
+            exit;
         }
 
-
-        // Vérifier si le modèle existe déjà
-        $modeleNom = htmlspecialchars(strip_tags(trim($data['modele'])));
-        $modelePresent = $this->modeles->getById($modeleNom);
-                        if (!$modelePresent) {
-                            echo json_encode(['success' => false, 'message' => 'Le modèle existe déjà']);
-                            exit;
-                        } 
-
-                        // Vérifier la longueur valide
-                      if (strlen($modele) < 2 || strlen($modele) > 30 || strlen($description) < 20 || strlen($description) > 100 || strlen($prix) < 1 || strlen($prix) > 10 || strlen($imageName) < 2 || strlen($imageName) > 150) {
-                                echo json_encode(['success' => false, 'message' => 'Le modèle ou un champ a une longueur invalide']);
-                                exit;
-                            }
-                            $succes = $this->modeles->createModele($modele, $description, $prix, $imageName, $marque_id);
-                            echo json_encode([
-                                'success' => $succes,
-                                'message' => $succes ? 'Modèle ajouté avec succès' : 'Erreur lors de l\'ajout du modèle'
-                            ]);
-                            exit;
-
-                            } else {
-                                echo json_encode(['success' => false, 'message' => 'Champs manquants']);
-                                exit;
-                            }
-                                            break;
-            default:
-    echo json_encode([
-    'success' => false,
-    'message' => 'Erreur lors de la mise à jour du modèle.'
-]);
-                    exit;
-                break;
+        // Vérification des longueurs
+        if (
+            strlen($modele) < 2 || strlen($modele) > 30 ||
+            strlen($description) < 20 || strlen($description) > 100 ||
+            strlen($prix) < 1 || strlen($prix) > 10
+        ) {
+            echo json_encode(['success' => false, 'message' => 'Un ou plusieurs champs ont une longueur invalide']);
+            exit;
         }
+
+        // Gestion de l'image (si fournie)
+
+
+        $imageName = $modeleExist['image']; // garder l'image actuelle par défaut
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0 ? basename($_FILES['image']['name']) : null) {
+            $newImageName = basename($_FILES['image']['name']);
+            $uploadDir = __DIR__ . '/../uploads/';
+            $uploadPath = $uploadDir . $newImageName;
+
+            // Vérification taille nom image
+            if (strlen($newImageName) < 2 || strlen($newImageName) > 150) {
+                echo json_encode(['success' => false, 'message' => 'Nom de fichier image invalide']);
+                exit;
+            }
+
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
+                $imageName = $newImageName;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors du téléchargement de l\'image']);
+                exit;
+            }
+        }
+
+        // Mise à jour
+        $success = $this->modeles->update($id, $modele, $description, $prix, $imageName, $marque_id);
+
+        echo json_encode([
+            'success' => $success,
+            'message' => $success ? 'Modèle mis à jour avec succès' : 'Erreur lors de la mise à jour du modèle'
+        ]);
+        exit;
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Champs manquants ou invalides']);
+        exit;
     }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+    exit;
+
 
 }
+                    break;
+
+                default:
+                    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+                    exit;
+            }
+        }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+// parse_str(file_get_contents("php://input"), $_PUT);
+// Vérification des champs obligatoires
+// if (
+//     !empty($_PUT['modele']) &&
+//     !empty($_PUT['description']) &&
+//     !empty($_PUT['prix']) &&
+//     !empty($_PUT['marque_id']) &&
+//     isset($_FILES['image']) && $_FILES['image']['error'] === 0
+// ) {
+//     // Sécurisation des champs
+//     $modele = htmlspecialchars(strip_tags(trim($_PUT['modele'])));
+//     $description = htmlspecialchars(strip_tags(trim($_PUT['description'])));
+//     $prix = htmlspecialchars(strip_tags(trim($_PUT['prix'])));
+//     $marque_id = (int) $_PUT['marque_id'];
+
+//         // Gestion de l’image
+//         $imageTmp = $_FILES['image']['tmp_name'];
+//         $imageName = basename($_FILES['image']['name']);
+//         $uploadDir = __DIR__ . '/../uploads/';
+//         $uploadPath = $uploadDir . $imageName;
+
+//         if (move_uploaded_file($imageTmp, $uploadPath)) {
+//             $success = $this->modeles->createModele($modele, $description, $prix, $imageName, $marque_id);
+//             echo json_encode([
+//                 'success' => $success,
+//                 'message' => $success ? 'Modèle ajouté avec succès' : 'Erreur lors de l\'ajout du modèle'
+//             ]);
+//         } else {
+//             echo json_encode(['success' => false, 'message' => 'Erreur lors du téléchargement de l\'image']);
+//         }
+
+
+//         // Vérifier si le modèle existe déjà
+//         $modeleNom = htmlspecialchars(strip_tags(trim($data['modele'])));
+//         $modelePresent = $this->modeles->getById($modeleNom);
+//                         if (!$modelePresent) {
+//                             echo json_encode(['success' => false, 'message' => 'Le modèle existe déjà']);
+//                             exit;
+//                         } 
+
+//                         // Vérifier la longueur valide
+//                       if (strlen($modele) < 2 || strlen($modele) > 30 || strlen($description) < 20 || strlen($description) > 100 || strlen($prix) < 1 || strlen($prix) > 10 || strlen($imageName) < 2 || strlen($imageName) > 150) {
+//                                 echo json_encode(['success' => false, 'message' => 'Le modèle ou un champ a une longueur invalide']);
+//                                 exit;
+//                             }
+//                             $succes = $this->modeles->update($modele, $description, $prix, $imageName, $marque_id, $_PUT['id']);
+//                             echo json_encode([
+//                                 'success' => $succes,
+//                                 'message' => $succes ? 'Modèle ajouté avec succès' : 'Erreur lors de l\'ajout du modèle'
+//                             ]);
+//                             exit;
+
+//                             } else {
+//                                 echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+//                                 exit;
+//                             }
+//                                             break;

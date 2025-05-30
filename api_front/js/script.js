@@ -3,22 +3,22 @@
 
 
 function getMarquesAll() {
-    const stocksContainer = document.querySelector("#stocksContainer");
     fetch("http://localhost:3000/api_back/index.php/marques", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
         },
     })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            data.forEach((marque) => {
-                console.log(marque);
-                // Création de la carte pour chaque marque
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerHTML = `
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        data.forEach((marque) => {
+            console.log(marque);
+            // Création de la carte pour chaque marque
+            const stocksContainer = document.querySelector("#stocksContainer");
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
                     <h3>${marque.marque}</h3>
                     <p>ID: ${marque.id}</p>
                     <div class="supMarBtn">
@@ -27,11 +27,31 @@ function getMarquesAll() {
                     </div>
                         <div class="messageContainerModifier" id="messageContainerModifier-${marque.id}"></div>
                         <div class="messageContainerSupprimer" id="messageContainerSupprimer-${marque.id}"></div>
-                `;
-                stocksContainer.appendChild(card);
-
-                //Supprimer une marque dans le container
+                        `;
+                    stocksContainer.appendChild(card);
+// Je crée ici le bouiton qui permet de voir les modèles associés à la marque.
+// Mettre en position absolute le bouton pour qu'il soit en bas de la carte car je n'aai pas de div qui permet de faire un flex
+                const modelesMarque = document.createElement("button");
+                console.log(modelesMarque);
                 
+                modelesMarque.classList.add("modelesMarque");
+                modelesMarque.id = `modelesMarque-${marque.id}`;
+                modelesMarque.textContent = "Voir les modèles";
+                // Ajoute la carte au container
+                card.appendChild(modelesMarque);
+
+// Je fais un event dans lequel je vais appeler la fonction qui récupère les modèles associés à la marque
+// Je fais un event dans lequel je vais appeler la fonction qui récupère les modèles associés à la marque
+// Je fais un event dans lequel je vais appeler la fonction qui récupère les modèles associés à la marque
+// Je fais un event dans lequel je vais appeler la fonction qui récupère les modèles associés à la marque
+                // modelesMarque.addEventListener("click", () => {
+                //     getModeleByMarqueID(marque.id);
+
+                // });
+
+
+ //Supprimer une marque dans le container
+
                 const btnSupprimer = card.querySelector(`#btnSupprimer-${marque.id}`);
                 btnSupprimer.addEventListener("click", () => {
                     const messageContainerSupprimer = card.querySelector(".messageContainerSupprimer");
@@ -56,7 +76,7 @@ function getMarquesAll() {
                 btnModifier.addEventListener("click", () => {
                     const formModifier = document.createElement("form");
                     formModifier.innerHTML = `
-                        <input type="text" value="${marque.marque}" /> 
+                        <input name="marque" type="text" value="${marque.marque}" /> 
                         <button type="button" class="btnValiderModifier">Valider</button>
                         <button type="button" class="annulerModifier">❌</button>
                         <div class="messageContainerModifierValiver" id="messageContainerModifierAnnuler-${marque.id}"></div>
@@ -70,6 +90,8 @@ function getMarquesAll() {
                     btnValiderModifier.addEventListener("click", (e) => {
                         e.preventDefault();
                         const newMarque = formModifier.querySelector("input[type='text']").value;
+                        //Mettre en display non le boutton annuler
+                      btnAnnulerModifier.style.display = "none";
                         if (newMarque) {
                             
                             formModifier.querySelector(".messageContainerModifierValiver").textContent = `La marque a été modifiée avec succès !`;
@@ -122,7 +144,6 @@ function getMarquesAll() {
         });
 }
 getMarquesAll(); 
-
 function deleteMarque(id) {
     fetch(`http://localhost:3000/api_back/index.php/marques?id=${id}`, {
         method: "DELETE",
@@ -236,6 +257,7 @@ btnAjoutMarque.addEventListener("click", (e) => {
                         messageContainerAjoutmarque.style.color = "green";
                         setTimeout(() => {
                             messageContainerAjoutmarque.textContent = "";
+                            window.location.reload(); 
                         }, 3000); // Supprime le message après 3 secondes   
                     } else {
                         messageContainerAjoutmarque.textContent = data.message;
@@ -270,14 +292,7 @@ btnAjoutMarque.addEventListener("click", (e) => {
     }
 });
 
-
-
-
-
-
-
-
-
+// Associé les modèles aux marque par un fetch GET
 
 
 

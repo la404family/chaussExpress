@@ -107,50 +107,58 @@ class MarqueController {
                 }
                 break;
                case 'PUT':
-    try {
-        if (isset($data['id'], $data['marque']) && !empty($data['id']) && !empty($data['marque'])) {
-            $id = (int) $data['id'];
-            $marque = htmlspecialchars(strip_tags(trim($data['marque'])));
+        try {
+            if (!empty($data) && isset($data['id'], $data['marque']) && !empty($data['id']) && !empty($data['marque'])) {
+                
+                $id = (int) $data['id'];
+                $marque = htmlspecialchars(strip_tags(trim($data['marque'])));
 
-            if (strlen($marque) < 2 || strlen($marque) > 30) {
+                if (strlen($marque) < 2 || strlen($marque) > 30) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'La marque doit contenir entre 2 et 30 caractères'
+                    ]);
+                    exit;
+                }
+
+                $marquePresente = $this->marques->getByName($marque);
+                if ($marquePresente && $marquePresente['id'] != $id) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'La marque existe déjà'
+                    ]);
+                    exit;
+                }
+
+                $success = $this->marques->update($id, $marque);
                 echo json_encode([
-                    'success' => false,
-                    'message' => 'La marque doit contenir entre 2 et 30 caractères'
+                    'success' => $success,
+                    'message' => $success ? 'Marque modifiée avec succès' : 'Erreur lors de la modification'
                 ]);
-                exit;
-            }
-
-            $marquePresente = $this->marques->getByName($marque);
-
-            if ($marquePresente && $marquePresente['id'] != $id) {
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'La marque existe déjà'
-                ]);
-                exit;
-            }
-
-
-            $success = $this->marques->update($id, $marque);
-
-            if ($success) {
-                echo json_encode(['success' => true, 'message' => 'Marque modifiée avec succès']);
                 exit;
             } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de la modification']);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Champs requis manquants'
+                ]);
                 exit;
             }
-        } else {
-            echo json_encode(['success' => false, 'message' => 'ID ou nom de marque manquant']);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour: ' . $e->getMessage()
+            ]);
             exit;
         }
-    } catch (Exception $e) {
-        echo json_encode(['error' => 'Erreur lors de la mise à jour: ' . $e->getMessage()]);
-        exit;
-    }
-    break;
+        break;
 
+    default:
+        echo json_encode([
+            'success' => false,
+            'message' => 'Méthode non supportée'
+        ]);
+        exit;
+}
         }
     }
 
-}

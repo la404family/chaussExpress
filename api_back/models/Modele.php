@@ -42,7 +42,8 @@ class Modele {
     {
         try {
             $query = "SELECT * FROM {$this->table} WHERE modele = :modele";
-            $stmt = $this->pdo->prepare($query);
+            $stmt = $this->pdo->prepare($query); 
+            $stmt->bindParam(':modele', $modele, \PDO::PARAM_STR);
             $stmt->execute(['modele' => $modele]);
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             return $result ?: null;
@@ -83,9 +84,10 @@ class Modele {
     }
 
     // Mettre à jour un modèle
-    public function update(int $id, string $modele, string $description, float $prix, string $image, int $marque_id): bool
-    {
-        try {
+   public function update(int $id, string $modele, string $description, float $prix, ?string $image, int $marque_id): bool
+{
+    try {
+        if ($image !== null) {
             $query = "UPDATE {$this->table} 
                       SET modele = :modele, description = :description, prix = :prix, image = :image, marque_id = :marque_id
                       WHERE id = :id";
@@ -98,11 +100,25 @@ class Modele {
                 'image'      => $image,
                 'marque_id'  => $marque_id
             ]);
-        } catch (PDOException $e) {
-            throw new Exception("Erreur lors de la mise à jour du modèle: " . $e->getMessage());
+        } else {
+            // Ne met pas à jour l'image
+            $query = "UPDATE {$this->table} 
+                      SET modele = :modele, description = :description, prix = :prix, marque_id = :marque_id
+                      WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([
+                'id'         => $id,
+                'modele'     => $modele,
+                'description'=> $description,
+                'prix'       => $prix,
+                'marque_id'  => $marque_id
+            ]);
         }
+    } catch (PDOException $e) {
+        throw new Exception("Erreur lors de la mise à jour du modèle: " . $e->getMessage());
     }
-    // Récupérer les modèles par marque
+}
+    // Récupérer tous les modèles d'une marque
     public function getByMarqueId(int $marque_id): array
     {
         try {
@@ -110,13 +126,11 @@ class Modele {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute(['marque_id' => $marque_id]);
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new Exception("Erreur lors de la récupération des modèles par marque: " . $e->getMessage());
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la récupération des modèles par marque: " . $e->getMessage());
         }
     }
 }
-
-//
 
 
 

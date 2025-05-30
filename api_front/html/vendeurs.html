@@ -36,14 +36,6 @@
                         <label for="firstName">Prénom :</label>
                         <input type="text" id="firstName" name="prenom" required />
 
-                        <label for="mdp">Mot de passe :</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            required
-                            autocomplete="current-password"
-                        />
                         <label for="email">Email :</label>
                         <input
                             type="email"
@@ -52,6 +44,15 @@
                             required
                             autocomplete="email"
                         />
+                        <label for="mdp">Mot de passe :</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                            autocomplete="current-password"
+                        />
+                        <div id="messageContainerInscription"></div>
                         <input type="checkbox" id="isAdmin" name="is_admin" />
                         <button type="submit" id="btnSinscrire">S'inscrire</button>
                     </div>

@@ -94,4 +94,36 @@ class PointureQuantite {
             throw new \Exception("Erreur lors de la suppression : " . $e->getMessage());
         }
     }
+    // récupérer les quantités disponibles pour un modèle spécifique pour modifier le stocks
+    function getQuantitesByModeleId(int $modele_id): array
+    {
+        try {
+            $query = "SELECT pointure, quantite FROM {$this->table} WHERE modele_id = :modele_id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':modele_id', $modele_id, \PDO::PARAM_INT);
+            // Exécute la requête avec le modèle ID fourni
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la récupération des quantités par modèle : " . $e->getMessage());
+        }
+    }
+    function affichageGestionStock(): array
+    {
+        try {
+            $query = "SELECT modeles.modele, pointures_quantites.modele_id, marques.marque, pointures_quantites.pointure, pointures_quantites.quantite, pointures_quantites.id AS modele_pointure
+                    FROM pointures_quantites
+                    INNER JOIN modeles ON pointures_quantites.modele_id = modeles.id
+                    INNER JOIN marques ON modeles.marque_id = marques.id
+                    WHERE pointures_quantites.quantite
+                    ORDER BY marques.marque, modeles.modele, pointures_quantites.pointure;";
+
+
+            $stmt = $this->pdo->query($query);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de l'affichage de la gestion des stocks : " . $e->getMessage());
+        }
+    }
+
 }
