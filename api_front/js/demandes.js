@@ -24,34 +24,18 @@ function getDemandes(id) {
                 demandeDiv.className = "demande";
                 demandeDiv.innerHTML = `
                 <span>Date de la demande: <strong>${new Date(demande.created_at).toLocaleDateString()}</strong></span>
-                <span>Date de mise à jour: <strong>${new Date(demande.updated_at).toLocaleDateString()}</strong></span>
                 <h3>${demande.nom_client}</h3>
                 <p>Modèle demandé: <strong>${demande.modele_chaussure}</strong> </p>
                 <p>Pointure demandée : <strong>${demande.pointure}</strong> </p>
                 <p>Quantité demandée: <strong>${demande.quantite_demandee}</strong> </p>
                 <p>Vendeur: <strong>${demande.prenom_vendeur}</strong> </p> 
-                  <button class="btnDemande">${demande.id}</button>
+                <button class="btnDemande" id="archiverDemande(${demande.id})">Archiver</button>
             `;
                 demandesContainer.appendChild(demandeDiv);    
 
             });
-            //Meettre un update pour archiver la demande avec un PUT qui archove seulement la demande
-            const archiveBtn = document.querySelectorAll(".btnDemande");
-            console.log(archiveBtn);
-            archiveBtn.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  const confirmation = confirm("Êtes-vous sûr de vouloir archiver cette demande ? Vous ne pourrez pas la récupérer.");
-                  if (confirmation) {
-                      archiverDemande(demande.id);
-                      archiveBtn.disabled = true; // Disable the button after archiving
-                      setTimeout(() => {
-                          // Rafraîchir la liste des demandes après l'archivage
-                          demandesContainer.innerHTML = ""; // Clear previous content
-                          getDemandes(); // Re-fetch the demandes
-                      },2000);
-                  }
-            });
-
+            // Ajouter un gestionnaire d'événements pour le bouton "Archiver"
+         
         })
         .catch((error) => {
             console.error("Erreur lors de la récupération des demandes:", error);

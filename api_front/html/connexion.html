@@ -11,19 +11,16 @@
         <!-- Formulaire de connexion à l'espace de gestion de stocks -->
 
         <form id="connexionForm" action="" method="POST">
-            <label for="username">Nom d'utilisateur :</label>
+            <label for="username">Votre email :</label>
             <input type="text" id="username" name="username" autocomplete="username"/>
 
             <label for="password">Mot de passe :</label>
             <input type="password" id="password" name="password"  autocomplete="current-password"/>
             <button type="submit" id="btnSeConnecter">Se connecter</button>
+            <div id="messageContainerConnexion"></div>
 
-            <p>
-                Vous n'êtes pas encore inscrit ?
-                <a href="" id="inscriptionLink">Inscrivez-vous ici</a>
-            </p>
         </form>
-       
+
 
         <script src="../js/connexion.js"></script>
     </body>

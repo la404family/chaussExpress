@@ -111,10 +111,39 @@ public function getByIdWithDemandesCount($id) {
     $stmt->execute([$id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
-
+// Récupérer les vendeurs par leur email pour la connexion
+public function getByEmail(string $email): ?array
+{
+    try {
+        $query = "SELECT * FROM {$this->table} WHERE email = :email";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['email' => $email]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result ?: null;
+    } catch (\PDOException $e) {
+        throw new \Exception("Erreur lors de la récupération du vendeur par email : " . $e->getMessage());
+    }
 }
-// tester
+public function verificationMdp(string $email, string $password): ?array
+{
+    $vendeur = $this->getByEmail($email);
+    if ($vendeur && password_verify($password, $vendeur['password_hash'])) {
+        return $vendeur;
+    }
+    return null;
+}
+//Un fonction pour vérifier le mot de passe
+public function mdpController(string $email, string $password): ?array
+{
+    $vendeur = $this->getByEmail($email);
+    if ($vendeur && password_verify($password, $vendeur['password_hash'])) {
+        return $vendeur;
+    }
+    return null;
+}
+}
 
+// tester
 
 // // Initialize the database connection
 // $vendeur= new Vendeur($database->getConnection());

@@ -14,8 +14,15 @@ class VendeurController {
         switch ($method) {
             case 'GET':
                 $result = isset($_GET['id'])
-                    ? $this->vendeurs->getByIdWithDemandesCount($_GET['id'])
-                    : $this->vendeurs->getAllWithDemandesCount();
+                        ? $this->vendeurs->getByIdWithDemandesCount($_GET['id'])
+                        : (isset($_GET['email'])
+                              ? $this->vendeurs->getByEmail($_GET['email'])
+                              : $this->vendeurs->getAll());
+                if (!$result) {
+                    http_response_code(404);
+                    echo json_encode(['success' => false, 'message' => 'Aucun vendeur trouvé']);
+                    exit;
+                }
                 echo json_encode(['success' => true, 'data' => $result]);
                 break;
 

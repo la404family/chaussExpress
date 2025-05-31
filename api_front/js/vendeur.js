@@ -335,5 +335,3 @@ function modifierVendeur(id) {
         console.error("Erreur :", error);
     });
 }
-
-export default getAllVendeurs;

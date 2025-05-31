@@ -7,6 +7,7 @@ require_once __DIR__ . '/config/Database.php';
 // Connexion à la BDD
 $database = new Database();
 $db = $database->getConnection();
+// j'ajoute la la connexion
 
 // J'ajoute les header CORS pour permettre d'appeler l'API depuis le front
 header('Content-Type: application/json; charset=utf-8');
@@ -53,15 +54,23 @@ switch ($resource) {
         $controller = new DemandeController($db);
         $controller->handleRequest($method, $data);
         break;
-    // case 'clients':
-    //     require_once __DIR__ . '/Controllers/clientController.php';
-    //     $controller = new ClientController($db);
-    //     $controller->handleRequest($method, $data);
-    //     break;
     case 'pointures_quantites':
         require_once __DIR__ . '/Controllers/pointureQuantiteController.php';
         $controller = new PointureQuantiteController($db);
         $controller->handleRequest($method, $data);
+        break;
+    case 'connexion':
+        require_once __DIR__ . '/Controllers/userController.php';
+        $controller = new UserController($db);
+        $controller->handleRequest($method, $data);
+        if ($method === 'POST') {
+            $userController->login();
+        } elseif ($method === 'GET') {
+            $userController->logout();
+        } else {
+            http_response_code(405);
+            echo json_encode(['error' => 'Méthode non autorisée']);
+        }
         break;
     default:
      http_response_code(404);
