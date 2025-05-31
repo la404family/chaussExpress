@@ -2,6 +2,11 @@
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
+// J'inclus les fichiers nécessaires pour la connexion à la BDD et le controller
+require_once __DIR__ . '/config/Database.php';
+// Connexion à la BDD
+$database = new Database();
+$db = $database->getConnection();
 
 // J'ajoute les header CORS pour permettre d'appeler l'API depuis le front
 header('Content-Type: application/json; charset=utf-8');
@@ -9,14 +14,11 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, DELETE,PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
-// J'inclus les fichiers nécessaires pour la connexion à la BDD et le controller
-// J'inclus les fichiers nécessaires pour la connexion à la BDD et le controller
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Accept');
+    exit;
+}
 
-require_once __DIR__ . '/config/Database.php';
-
-// Connexion à la BDD
-$database = new Database();
-$db = $database->getConnection();
 
 // Je récupère les données envoyées par le front (fetch) et je les transforme en tableau associatif
 $method = $_SERVER['REQUEST_METHOD'];
@@ -29,6 +31,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', $uri);
 $resource = end($uri);
 
+try{
 switch ($resource) {
     case 'marques':
         require_once __DIR__ . '/Controllers/marqueController.php';
@@ -61,5 +64,10 @@ switch ($resource) {
         $controller->handleRequest($method, $data);
         break;
     default:
+     http_response_code(404);
         echo json_encode(['error' => 'Ressource non trouvée']);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Erreur serveur: ' . $e->getMessage(), 'success' => false]);
 }

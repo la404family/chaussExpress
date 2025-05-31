@@ -36,15 +36,17 @@ class Demande {
     }
 
     // Créer une nouvelle demande 
-    public function create(int $client_id, int $vendeur_id, int $modele_id, float $pointure, int $quantite): bool
+    public function create(string $nom, string $prenom, string $email, int $vendeur_id, int $modele_id, float $pointure, int $quantite): bool
     {
         try {
             $query = "INSERT INTO {$this->table} 
-                      (client_id, vendeur_id, modele_id, pointure, quantite_demandee, created_at, updated_at, archivee) 
-                      VALUES (:client_id, :vendeur_id, :modele_id, :pointure, :quantite, NOW(), NOW(), 0)";
+                      (nom, prenom, email, vendeur_id, modele_id, pointure, quantite_demandee, created_at, updated_at, archivee) 
+                      VALUES (:nom, :prenom, :email, :vendeur_id, :modele_id, :pointure, :quantite, NOW(), NOW(), 0)";
             $stmt = $this->pdo->prepare($query);
             return $stmt->execute([
-                'client_id' => $client_id,
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'email' => $email,
                 'vendeur_id' => $vendeur_id,
                 'modele_id' => $modele_id,
                 'pointure' => $pointure,
@@ -91,15 +93,18 @@ class Demande {
         try {
             $query = "SELECT 
   demandes.id,
-  clients.nom AS nom_client,
+    demandes.nom AS nom_client,
+  demandes.prenom AS prenom_client,
+  demandes.email AS email_client,
   vendeurs.prenom AS prenom_vendeur,
+created_at,
+  updated_at,
   modeles.modele AS modele_chaussure,
   demandes.pointure,
   demandes.quantite_demandee,
-  demandes.archivee
+  demandes.archivee 
 FROM demandes
-LEFT JOIN clients ON demandes.client_id = clients.id
-LEFT JOIN vendeurs ON demandes.vendeur_id = vendeurs.id
+    LEFT JOIN vendeurs ON demandes.vendeur_id = vendeurs.id
 LEFT JOIN modeles ON demandes.modele_id = modeles.id";
                       
             $stmt = $this->pdo->query($query);

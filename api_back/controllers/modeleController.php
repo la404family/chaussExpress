@@ -25,7 +25,6 @@ class ModeleController {
                 case 'GET':
                     if (isset($_GET['id'])) {
                         $result = $this->modeles->getByMarqueId($_GET['id']);
-                        
 
                     } 
                     else {
@@ -107,86 +106,49 @@ class ModeleController {
                     break;
 
 
-       case 'PUT':
+
 // Récupération des données PUT
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method']) && $_POST['_method'] === 'PUT') {
-    // Vérification des champs
-    if (
-        isset($_POST['id'], $_POST['modele'], $_POST['description'], $_POST['prix'], $_POST['marque_id']) &&
-        !empty($_POST['id']) &&
-        !empty($_POST['modele']) &&
-        !empty($_POST['description']) &&
-        !empty($_POST['prix']) &&
-        !empty($_POST['marque_id'])
-    ) {
-        // Sécurisation
-        $id = (int) $_POST['id'];
-        $modele = htmlspecialchars(strip_tags(trim($_POST['modele'])));
-        $description = htmlspecialchars(strip_tags(trim($_POST['description'])));
-        $prix = htmlspecialchars(strip_tags(trim($_POST['prix'])));
-        $marque_id = (int) $_POST['marque_id'];
+case 'PUT':
+    try {
+        // Récupérer les données PUT directement
+        $putData = json_decode(file_get_contents("php://input"), true);
         
-
-        // Vérification du modèle existant
-        $modeleExist = $this->modeles->getById($id);
-        if (!$modeleExist) {
-            echo json_encode(['success' => false, 'message' => 'Le modèle n\'existe pas']);
-            exit;
+        // Vérification des champs
+        if (empty($putData) || !isset($putData['id'], $putData['modele'], $putData['description'], $putData['prix'])) {
+            throw new Exception('Tous les champs sont requis');
         }
 
-        // Vérification des longueurs
-        if (
-            strlen($modele) < 2 || strlen($modele) > 30 ||
-            strlen($description) < 20 || strlen($description) > 100 ||
-            strlen($prix) < 1 || strlen($prix) > 10
-        ) {
-            echo json_encode(['success' => false, 'message' => 'Un ou plusieurs champs ont une longueur invalide']);
-            exit;
-        }
+        // Nettoyage des données
+        $id = (int) $putData['id'];
+        $modele = htmlspecialchars(strip_tags(trim($putData['modele'])));
+        $description = htmlspecialchars(strip_tags(trim($putData['description'])));
+        $prix = (float) $putData['prix'];
+        $image = $putData['image'] ?? null; // Optionnel pour la mise à jour
 
-        // Gestion de l'image (si fournie)
-
-
-        $imageName = $modeleExist['image']; // garder l'image actuelle par défaut
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0 ? basename($_FILES['image']['name']) : null) {
-            $newImageName = basename($_FILES['image']['name']);
-            $uploadDir = __DIR__ . '/../uploads/';
-            $uploadPath = $uploadDir . $newImageName;
-
-            // Vérification taille nom image
-            if (strlen($newImageName) < 2 || strlen($newImageName) > 150) {
-                echo json_encode(['success' => false, 'message' => 'Nom de fichier image invalide']);
-                exit;
-            }
-
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-                $imageName = $newImageName;
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors du téléchargement de l\'image']);
-                exit;
-            }
+        // Validation
+        if (strlen($modele) < 2 || strlen($modele) > 30) {
+            throw new Exception('Le modèle doit contenir entre 2 et 30 caractères');
         }
 
         // Mise à jour
-        $success = $this->modeles->update($id, $modele, $description, $prix, $imageName, $marque_id);
-
+        $success = $this->modeles->update($id, $modele, $description, $prix, $image);
+        if (!$success) {
+            throw new Exception('Échec de la mise à jour du modèle');
+        }
         echo json_encode([
             'success' => $success,
-            'message' => $success ? 'Modèle mis à jour avec succès' : 'Erreur lors de la mise à jour du modèle'
+            'message' => $success ? 'Modèle mis à jour' : 'Échec de la mise à jour'
         ]);
-        exit;
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Champs manquants ou invalides']);
-        exit;
+        
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
-    exit;
-
-
-}
-                    break;
+    break;
 
                 default:
                     echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);

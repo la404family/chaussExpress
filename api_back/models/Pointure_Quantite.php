@@ -65,7 +65,7 @@ class PointureQuantite {
         }
     }
 
-    // Mettre à jour une ligne pointure/quantité
+ //Je crée ici une methode pour récupérer l'id du modèle et la poointure qui seront dans un select en front pour les modeles et pointures et dans un input pour la quantité
     public function update(int $id, float $pointure, int $quantite): bool
     {
         try {
@@ -111,12 +111,22 @@ class PointureQuantite {
     function affichageGestionStock(): array
     {
         try {
-            $query = "SELECT modeles.modele, pointures_quantites.modele_id, marques.marque, pointures_quantites.pointure, pointures_quantites.quantite, pointures_quantites.id AS modele_pointure
-                    FROM pointures_quantites
-                    INNER JOIN modeles ON pointures_quantites.modele_id = modeles.id
-                    INNER JOIN marques ON modeles.marque_id = marques.id
-                    WHERE pointures_quantites.quantite
-                    ORDER BY marques.marque, modeles.modele, pointures_quantites.pointure;";
+            $query = "SELECT 
+            pointures_quantites.modele_id,
+            pointures_quantites.id,
+    marques.marque,
+    modeles.modele,
+
+    pointures_quantites.pointure,
+    pointures_quantites.quantite
+FROM pointures_quantites 
+
+JOIN modeles ON pointures_quantites.modele_id = modeles.id
+
+JOIN marques ON modeles.marque_id = marques.id
+WHERE marques.marque IS NOT NULL
+ORDER BY modeles.modele, pointures_quantites.pointure;
+";
 
 
             $stmt = $this->pdo->query($query);
@@ -125,5 +135,6 @@ class PointureQuantite {
             throw new \Exception("Erreur lors de l'affichage de la gestion des stocks : " . $e->getMessage());
         }
     }
+
 
 }

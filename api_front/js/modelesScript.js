@@ -103,19 +103,18 @@ function getModeles(id) {
                     console.log(validerModifierModele);
 
                     validerModifierModele.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        
                         const formModifierModele = cardModele.querySelector("#modifierModele");
                         formModifierModele.style.display = "none";
                          editModeleBtn.style.display = "block";
                         deleteModeleBtn.style.display = "block";
+                        const newModele = formModifierModele.modele.value;
+                        const newDescription = formModifierModele.description.value;
+                        const newPrix = formModifierModele.prix.value;
+                        const newImage = formModifierModele.image.files[0]?.name || modele.image;
 
-                        event.preventDefault();
-                       const imageInput = formModifierModele.querySelector("#image");
-
-if (!formModifierModele.modele.value || 
-    !formModifierModele.description.value || 
-    !formModifierModele.prix.value || 
-    !imageInput.files[0]
-                        ) {
+                        if (!newModele || !newDescription || !newPrix || !newImage) {
                             console.log(formModifierModele.modele.value, formModifierModele.description.value, formModifierModele.prix.value, formModifierModele.image.files[0]);
                             const messageContainerModifierModele = cardModele.querySelector(
                                 "#messageContainerModifierModele"
@@ -197,35 +196,27 @@ function deleteModele(id) {
 deleteModele();
 
 // Fonction pour modifier un modèle au click d'un boutton dans un formulaire injecté dans le DOM
-function updateModele(id) {
-    // const formData = new FormData();
-    // formData.append("_method", "PosT"); 
-    // formData.append("id", id);
-    // formData.append("modele", document.querySelector("#modele").value);
-    // formData.append("description", document.querySelector("#description").value);
-    // formData.append("prix", document.querySelector("#prix").value);
-
-    // const imageInput = document.querySelector("#image");
-    // if (imageInput.files[0]) {
-    //     formData.append("image", imageInput.files[0]);
-    // }
-
+function updateModele(id, modele, description, prix, image) {
+  const formData={
+        id: id,
+        modele: modele,
+        description: description,
+        prix: prix,
+        image: image
+  };
     fetch("http://localhost:3000/api_back/index.php/modeles", {
-        method: "PUT", // POST obligatoire pour envoyer des fichiers
+        method: "PUT", 
         headers: {
             "Content-Type": "application/json",
-        },body: JSON.stringify({
-            id: id,
-            modele: document.querySelector("#modele").value,
-            description: document.querySelector("#description").value,
-            prix: document.querySelector("#prix").value,
-            image: document.querySelector("#image").files[0] ? document.querySelector("#image").files[0].name : null,
-        }),
-    })
+        },
+        body: JSON.stringify(formData)
+        })
+
     .then((response) => response.json())
     .then((data) => {
-        const messageContainerModifierModele = document.querySelector("#messageContainerModifierModele");
+        console.log(data);
         if (data.success) {
+            const messageContainerModifierModele = document.querySelector("#messageContainerModifierModele");
             messageContainerModifierModele.textContent = "Modèle mis à jour avec succès!";
             messageContainerModifierModele.style.color = "green";
         } else {
@@ -236,7 +227,15 @@ function updateModele(id) {
             messageContainerModifierModele.textContent = "";
         }, 3000);
     })
-    .catch((err) => console.error("Erreur fetch updateModele:", err));
+    .catch((err) => {
+        const messageContainerModifierModele = document.querySelector("#messageContainerModifierModele");
+        messageContainerModifierModele.textContent = "Erreur lors de la mise à jour du modèle.";
+        messageContainerModifierModele.style.color = "red";
+        setTimeout(() => {
+            messageContainerModifierModele.textContent = "";
+        }, 300);
+        console.error("Erreur fetch :", err);
+    });
 }
 
 // updateModele(); // Exemple d'appel de la fonction pour mettre à jour un modèle

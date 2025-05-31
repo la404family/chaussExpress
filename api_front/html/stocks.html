@@ -1,41 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Sctocks</title>
-      <link rel="stylesheet" href="/api_front/css/style.css">
-      <link rel="stylesheet" href="/api_front/css/stocks.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stocks</title>
+    <link rel="stylesheet" href="/api_front/css/style.css" />
+    <link rel="stylesheet" href="/api_front/css/stocks.css" />
 </head>
 <body>
-       <header>
-            <h1>Chauss'Express - Nos chaussures</h1>
-            <nav>
-                <ul>
-                    <li><a href="../html/index.html">Accueil</a></li>
-                    <li><a href="../html/vendeurs.html">Vendeurs</a></li>
-                    <li><a href="../html/modeles.html">Modèles</a></li>
-                    <li><a href="../html/demandes.html">Demandes</a></li>
-                </ul>
-            </nav>
-        </header>
+    <header>
+        <h1>Chauss'Express - Nos chaussures</h1>
+        <nav>
+            <ul>
+                <li><a href="../html/index.html">Accueil</a></li>
+                <li><a href="../html/vendeurs.html">Vendeurs</a></li>
+                <li><a href="../html/modeles.html">Modèles</a></li>
+                <li><a href="../html/demandes.html">Demandes</a></li>
+            </ul>
+        </nav>
+    </header>
 
-
-
-        <main>
+    <main>
+        <div id="mainAffichage">
             <section id="stocks">
                 <h2>Nos Stocks</h2>
                 <div id="stocksList">
-                  <!-- Faire un tableau avce des select dans les case pointure et un autre case avce un select da coté -->
+                    <!-- Faire un tableau avec des <select> pour la pointure et un autre champ à côté -->
                 </div>
             </section>
+
             <section id="admin">
-                <h2>Administration</h2>
-                <div id="adminActions">
-                    <button id="btnAjouter">Ajouter une nouvelle pointure et son stock</button>
+                <h2>Ajouter du stock</h2>
+                <div id="ajouterPointure">
+                    <form id="addPointureForm">
+                        <select id="marqueId" name="marque_id" required>
+                            <option value="">Sélectionner une marque</option>
+                            <!-- Options injectées en JS -->
+                        </select>
+
+                        <select id="modeleId" name="modele_id" required>
+                            <option value="">Sélectionner un modèle</option>
+                            <!-- Options injectées en JS -->
+                        </select>
+
+                        <select id="pointureId" name="pointure" required>
+                            <option value="">Sélectionner une pointure</option>
+                            <!-- Options injectées en JS -->
+                        </select> 
+
+                        <input
+                            type="number"
+                            id="quantiteId"
+                            name="quantite"
+                            placeholder="Quantité à ajouter"
+                            min="1"
+                            required
+                        />
+
+                        <div>
+                            <button class="styleBtn" id="btnAjouterStock">Ajouter</button>
+                        </div>
+
+                        <div class="messageContainerModifierPointure"></div>
+                    </form>
+                </div>
+
+                <h2>Ajouter une pointure</h2>
+                <div id="ajouterPointure">
+                    <form id="ajouterPointureForm">
+                        <input
+                            type="number"
+                            id="pointure"
+                            name="pointure"
+                            placeholder="Nouvelle pointure"
+                            min="1"
+                            required
+                        />
+                        <input
+                            type="number"
+                            id="quantite"
+                            name="quantite"
+                            placeholder="Quantité"
+                            min="1"
+                            required
+                        />
+                        <button
+                            class="styleBtn"
+                            type="submit"
+                            id="btnAjoutPointure"
+                        >
+                            Ajouter
+                        </button>
+                        <div class="messageContainerAjoutPointure"></div>
+                    </form>
                 </div>
             </section>
-        </main>
-      <script src="/api_front/js/stocks.js"></script>
+        </div>
+    </main>
+
+    <script src="/api_front/js/stocks.js"></script>
 </body>
 </html>

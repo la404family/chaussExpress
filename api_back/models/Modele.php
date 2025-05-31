@@ -84,39 +84,61 @@ class Modele {
     }
 
     // Mettre à jour un modèle
-   public function update(int $id, string $modele, string $description, float $prix, ?string $image, int $marque_id): bool
+   public function update(int $id, string $modele, string $description, float $prix, ?string $image): bool
 {
-    try {
-        if ($image !== null) {
-            $query = "UPDATE {$this->table} 
-                      SET modele = :modele, description = :description, prix = :prix, image = :image, marque_id = :marque_id
-                      WHERE id = :id";
-            $stmt = $this->pdo->prepare($query);
-            return $stmt->execute([
-                'id'         => $id,
-                'modele'     => $modele,
-                'description'=> $description,
-                'prix'       => $prix,
-                'image'      => $image,
-                'marque_id'  => $marque_id
-            ]);
-        } else {
-            // Ne met pas à jour l'image
-            $query = "UPDATE {$this->table} 
-                      SET modele = :modele, description = :description, prix = :prix, marque_id = :marque_id
-                      WHERE id = :id";
-            $stmt = $this->pdo->prepare($query);
-            return $stmt->execute([
-                'id'         => $id,
-                'modele'     => $modele,
-                'description'=> $description,
-                'prix'       => $prix,
-                'marque_id'  => $marque_id
-            ]);
-        }
-    } catch (PDOException $e) {
-        throw new Exception("Erreur lors de la mise à jour du modèle: " . $e->getMessage());
+    // Dans votre modèle
+
+{
+    $query = "UPDATE {$this->table} 
+              SET modele = :modele, description = :description, prix = :prix
+              " . ($image ? ", image = :image" : "") . "
+              WHERE id = :id";
+              
+    $stmt = $this->pdo->prepare($query);
+    $params = [
+        'id' => $id,
+        'modele' => $modele,
+        'description' => $description,
+        'prix' => $prix
+    ];
+    
+    if ($image) {
+        $params['image'] = $image;
     }
+    
+    return $stmt->execute($params);
+}
+    // try {
+    //     if ($image !== null) {
+    //         $query = "UPDATE {$this->table} 
+    //                   SET modele = :modele, description = :description, prix = :prix, image = :image, marque_id = :marque_id
+    //                   WHERE id = :id";
+    //         $stmt = $this->pdo->prepare($query);
+    //         return $stmt->execute([
+    //             'id'         => $id,
+    //             'modele'     => $modele,
+    //             'description'=> $description,
+    //             'prix'       => $prix,
+    //             'image'      => $image,
+    //             'marque_id'  => $marque_id
+    //         ]);
+    //     } else {
+    //         // Ne met pas à jour l'image
+    //         $query = "UPDATE {$this->table} 
+    //                   SET modele = :modele, description = :description, prix = :prix, marque_id = :marque_id
+    //                   WHERE id = :id";
+    //         $stmt = $this->pdo->prepare($query);
+    //         return $stmt->execute([
+    //             'id'         => $id,
+    //             'modele'     => $modele,
+    //             'description'=> $description,
+    //             'prix'       => $prix,
+    //             'marque_id'  => $marque_id
+    //         ]);
+    //     }
+    // } catch (PDOException $e) {
+    //     throw new Exception("Erreur lors de la mise à jour du modèle: " . $e->getMessage());
+    // }
 }
     // Récupérer tous les modèles d'une marque
     public function getByMarqueId(int $marque_id): array

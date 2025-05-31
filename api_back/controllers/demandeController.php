@@ -40,17 +40,18 @@ class DemandeController {
                     }
                     // On attend dans $data : client_id, vendeur_id, modele_id, pointure, quantite, status (optionnel)
                     if (
-                        isset($data['client_id'], $data['vendeur_id'], $data['modele_id'], $data['pointure'], $data['quantite']) &&
-                        !empty($data['client_id']) && !empty($data['vendeur_id']) && !empty($data['modele_id']) && !empty($data['pointure']) && !empty($data['quantite'])
+                        isset($data['nom'], $data['prenom'], $data['email'], $data['vendeur_id'], $data['modele_id'], $data['pointure'], $data['quantite']) &&
+                        !empty($data['nom']) && !empty($data['prenom']) && !empty($data['email']) && !empty($data['vendeur_id']) && !empty($data['modele_id']) && !empty($data['pointure']) && !empty($data['quantite'])
                     ) {
-                        $client_id = (int) $data['client_id'];
+                        $nom = $data['nom'];
+                        $prenom = $data['prenom'];
+                        $email = $data['email'];
                         $vendeur_id = (int) $data['vendeur_id'];
                         $modele_id = (int) $data['modele_id'];
                         $pointure = (float) $data['pointure'];
                         $quantite = (int) $data['quantite'];
-            
 
-                        $succes = $this->demandes->create($client_id, $vendeur_id, $modele_id, $pointure, $quantite);
+                        $succes = $this->demandes->create($nom, $prenom, $email, $vendeur_id, $modele_id, $pointure, $quantite);
 
                         echo json_encode([
                             'success' => $succes,
