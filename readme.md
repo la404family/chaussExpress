@@ -48,10 +48,9 @@ Je veux gérer:
 
 Je définis les tables : en fonction des entités
       - marques
-      - modèles (Chaque ➡️ modèle appartient à une seule 🔗marque.)
+      - modèles (Chaque modèle appartient à une seule marque.)
       - stocks
-      - pointures-quantités (🔗 table de liaison modèles ↔ pointures/quantité)
-      - clients
+      - pointures-quantités ( contient une clé unique pour chaque pointure et modèle)
       - vendeurs
       - demandes
 
@@ -61,8 +60,6 @@ Je définis les tables : en fonction des entités
       - Une pointure peut avoir plusieurs modèles
       - Une pointure peut avoir plusieurs quantités
       - Un modèle peut avoir plusieurs stocks
-      - Un client peut avoir plusieurs demandes
       - Un vendeur peut gérer plusieurs demandes
       - Une demande est liée à un modèle
-      - Une demande est liée à un client
       - Une demande est liée à un vendeur
