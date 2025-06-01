@@ -91,12 +91,17 @@ class Vendeur {
     // Récupérer les demandes (clients_id depuis table `demandes`)
     // Dans Vendeur.php
 public function getNombreDemandes() {
-    $stmt = $this->pdo->query("
-        SELECT v.*, COUNT(d.id) AS nb_demandes
-        FROM vendeurs v
-        LEFT JOIN demandes d ON d.vendeur_id = v.id
-        GROUP BY v.id
-    ");
+    //refaire la requete sans alias
+    $stmt = $this->pdo->query(
+        "SELECT vendeurs.id,
+       vendeurs.nom,
+       vendeurs.prenom,
+       vendeurs.email,
+       vendeurs.is_admin,
+       COUNT(demandes.id) AS nb_demandes
+FROM vendeurs 
+LEFT JOIN demandes ON demandes.vendeur_id = vendeurs.id
+GROUP BY vendeurs.id");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 

@@ -116,16 +116,13 @@ class PointureQuantite {
             pointures_quantites.id,
     marques.marque,
     modeles.modele,
-
     pointures_quantites.pointure,
     pointures_quantites.quantite
 FROM pointures_quantites 
-
-JOIN modeles ON pointures_quantites.modele_id = modeles.id
-
-JOIN marques ON modeles.marque_id = marques.id
+LEFT JOIN modeles ON pointures_quantites.modele_id = modeles.id
+LEFT JOIN marques ON modeles.marque_id = marques.id
 WHERE marques.marque IS NOT NULL
-ORDER BY modeles.modele, pointures_quantites.pointure;
+ORDER BY modeles.modele, pointures_quantites.pointure, pointures_quantites.quantite
 ";
 
 

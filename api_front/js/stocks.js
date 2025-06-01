@@ -230,4 +230,4 @@ function deleteStock(id) {
          error = `${error.message}`;
         });
 }
-deleteStock();
+deleteStock(4);
