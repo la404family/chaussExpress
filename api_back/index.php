@@ -1,7 +1,8 @@
 <?php
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
+error_log("Requête " . $_SERVER['REQUEST_METHOD'] . " sur " . $_SERVER['REQUEST_URI']);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 // J'inclus les fichiers nécessaires pour la connexion à la BDD et le controller
 require_once __DIR__ . '/config/Database.php';
 // Connexion à la BDD
@@ -13,7 +14,7 @@ $db = $database->getConnection();
 header('Content-Type: application/json; charset=utf-8');
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, DELETE,PUT, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Accept');
@@ -24,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 // Je récupère les données envoyées par le front (fetch) et je les transforme en tableau associatif
 $method = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents("php://input"), true);
+
 
 // Endpoint permet de lire dans l'url le type de requête( sans endpoint), par la suite on saura quel controller appeler
 
@@ -59,19 +61,11 @@ switch ($resource) {
         $controller = new PointureQuantiteController($db);
         $controller->handleRequest($method, $data);
         break;
-    case 'connexion':
+    case 'users':
         require_once __DIR__ . '/Controllers/userController.php';
-        $controller = new UserController($db);
-        $controller->handleRequest($method, $data);
-        if ($method === 'POST') {
-            $userController->login();
-        } elseif ($method === 'GET') {
-            $userController->logout();
-        } else {
-            http_response_code(405);
-            echo json_encode(['error' => 'Méthode non autorisée']);
-        }
-        break;
+            $controller = new UserController($db);
+            $controller->handleRequest($method, $data);
+            break;
     default:
      http_response_code(404);
         echo json_encode(['error' => 'Ressource non trouvée']);

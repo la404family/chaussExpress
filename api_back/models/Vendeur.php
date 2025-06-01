@@ -90,62 +90,33 @@ class Vendeur {
 
     // Récupérer les demandes (clients_id depuis table `demandes`)
     // Dans Vendeur.php
-public function getAllWithDemandesCount() {
+public function getNombreDemandes() {
     $stmt = $this->pdo->query("
         SELECT v.*, COUNT(d.id) AS nb_demandes
         FROM vendeurs v
         LEFT JOIN demandes d ON d.vendeur_id = v.id
-        GROUP BY v.id ORDER BY nb_demandes DESC
+        GROUP BY v.id
     ");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-public function getByIdWithDemandesCount($id) {
-    $stmt = $this->pdo->prepare("
-        SELECT * COUNT(id) AS nb_demandes
-        FROM vendeurs 
-        LEFT JOIN demandes  ON vendeur_id = id
-        WHERE id = ?
-        GROUP BY id
-    ");
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-// Récupérer les vendeurs par leur email pour la connexion
-public function getByEmail(string $email): ?array
-{
-    try {
-        $query = "SELECT * FROM {$this->table} WHERE email = :email";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute(['email' => $email]);
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result ?: null;
-    } catch (\PDOException $e) {
-        throw new \Exception("Erreur lors de la récupération du vendeur par email : " . $e->getMessage());
+ public function getByEmail($email) {
+        $stmt = $this->pdo->prepare("SELECT * FROM vendeurs WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-}
-public function verificationMdp(string $email, string $password): ?array
-{
-    $vendeur = $this->getByEmail($email);
-    if ($vendeur && password_verify($password, $vendeur['password_hash'])) {
-        return $vendeur;
-    }
-    return null;
-}
-//Un fonction pour vérifier le mot de passe
-public function mdpController(string $email, string $password): ?array
-{
-    $vendeur = $this->getByEmail($email);
-    if ($vendeur && password_verify($password, $vendeur['password_hash'])) {
-        return $vendeur;
-    }
-    return null;
-}
-}
 
+
+}
 // tester
 
+// // $vendeur = new Vendeur($pdo);
+// require_once '../config/Database.php';
+// require_once '../models/Vendeur.php';
+
 // // Initialize the database connection
+// $database = new Database();
 // $vendeur= new Vendeur($database->getConnection());
 // // Example usage
 // $vendeurs = $vendeur->getAll();

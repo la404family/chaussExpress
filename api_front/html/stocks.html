@@ -34,23 +34,19 @@
                 <h2>Ajouter du stock</h2>
                 <div id="ajouterPointure">
                     <form id="addPointureForm">
-                        <select id="marqueId" name="marque_id" required>
-                            <option value="">Sélectionner une marque</option>
-                            <!-- Options injectées en JS -->
-                        </select>
 
                         <select id="modeleId" name="modele_id" required>
                             <option value="">Sélectionner un modèle</option>
                             <!-- Options injectées en JS -->
                         </select>
 
-                        <select id="pointureId" name="pointure" required>
+                        <select id="pointure" name="pointure" required>
                             <option value="">Sélectionner une pointure</option>
                             <!-- Options injectées en JS -->
                         </select> 
 
                         <input
-                            type="number"
+                            type="number" 
                             id="quantiteId"
                             name="quantite"
                             placeholder="Quantité à ajouter"
@@ -62,7 +58,7 @@
                             <button class="styleBtn" id="btnAjouterStock">Ajouter</button>
                         </div>
 
-                        <div class="messageContainerModifierPointure"></div>
+                        <div class="messageContainerModifierQuantite"></div>
                     </form>
                 </div>
 

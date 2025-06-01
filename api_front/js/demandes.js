@@ -11,7 +11,7 @@ function getDemandes(id) {
     })
         .then((response) => {
             if (!response.ok) {
-                throw new Error("Network response was not ok");
+                throw new Error("La requête a échoué");
             }
             return response.json();
         })
@@ -30,8 +30,44 @@ function getDemandes(id) {
                 <p>Quantité demandée: <strong>${demande.quantite_demandee}</strong> </p>
                 <p>Vendeur: <strong>${demande.prenom_vendeur}</strong> </p> 
                 <button class="btnDemande" id="archiverDemande(${demande.id})">Archiver</button>
+                <p class="messageArchive"></p>
             `;
-                demandesContainer.appendChild(demandeDiv);    
+                demandesContainer.appendChild(demandeDiv);  
+                
+                // Ajouter un event sur le bouton 
+                  const archiverButton = demandeDiv.querySelector(".btnDemande");
+                  const messageArchive = demandeDiv.querySelector(".messageArchive");
+                  console.log(archiverButton);
+                  archiverButton.addEventListener("click", () => {
+                        const confirmation = confirm("Êtes-vous sûr de vouloir archiver cette demande ? Vous ne pourrez pas la récupérer.");
+                        if (confirmation) {
+                              messageArchive.textContent = "Demande archivée avec succès.";
+                              demandeDiv.style.backgroundColor = "lightgray"; 
+                        demandeDiv.style.userSelect = "none";  texte
+                        demandeDiv.style.pointerEvents = "none";
+                        archiverButton.textContent = "Archivée";
+                        archiverButton.style.backgroundColor="red";
+                               setTimeout(() => {
+                              messageArchive.textContent = "";
+                              archiverDemande(demande.id);
+                              window
+                              // Supprimer la demande de l'affichage
+                      }, 3000);
+                        }else {
+                              messageArchive.textContent = "Demande non archivée.";
+                              messageArchive.style.color = "red";
+                              setTimeout(() => {
+                                  messageArchive.textContent = "";
+                              }, 3000);
+                        }
+                    });
+                    if(demande.archivee== true) {
+                        demandeDiv.style.backgroundColor = "lightgray";
+                        demandeDiv.style.userSelect = "none";
+                        demandeDiv.style.pointerEvents = "none";
+                        archiverButton.textContent = "Archivée";
+                        archiverButton.style.backgroundColor="red"
+                    }
 
             });
             // Ajouter un gestionnaire d'événements pour le bouton "Archiver"
@@ -42,6 +78,7 @@ function getDemandes(id) {
         });
 }
 getDemandes();
+
 
 // Fonction pour archiver une demande
 function archiverDemande(id) {
@@ -85,7 +122,7 @@ function getVendeurId() {
             })
             .then((data) => {
                   console.log(data);
-                  const selectVendeur = document.querySelector("#vendeurId");
+                  const selectVendeur = document.querySelector("#vendeur_id");
                   data.data.forEach((vendeur) => {
                         // console.log(vendeur);
                       const option = document.createElement("option");
@@ -116,7 +153,7 @@ function getModeleId() {
             })
             .then((data) => {
                   console.log(data);
-                  const selectModele = document.querySelector("#modeleList");
+                  const selectModele = document.querySelector("#modele_id");
                   data.data.forEach((modele) => {
                         // console.log(modele);
                   const option = document.createElement("option");
@@ -132,60 +169,60 @@ function getModeleId() {
 getModeleId();
 
 //Ajouter une demande avec un formulaire en HTML et récupérer les données du formulaire
-function addDemande(nom_client, prenom_client, modele_chaussure, pointure, quantite_demandee, id_vendeur) {
-    const demande = {
-        nom_client: nom_client,
-        prenom_client: prenom_client,
-        email: email,
-        modele_chaussure: modele_chaussure,
-        pointure: pointure,
-        quantite_demandee: quantite_demandee,
-        id_vendeur: id_vendeur
-    };
-    fetch("http://localhost:3000/api_back/index.php/demandes", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(demande)
-    })
-        .then(response => response.json())
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Erreur lors de l'ajout de la demande");
-            }
-            return response.json();
-        })
-        .then((response) => {
-            console.log(response);
-            if (response.success) {
-                console.log("Demande ajoutée avec succès");
-            } else {
-                console.error("Erreur lors de l'ajout de la demande");
-            }
-        })
-        .catch((error) => {
-            console.error("Erreur:", error);
-        });
-}
+// function addDemande(nom_client, prenom_client, modele_chaussure, pointure, quantite_demandee, id_vendeur) {
+//     const demande = {
+//         nom_client: 
+//         prenom_client: prenom_client,
+//         modele_chaussure: modele_chaussure,
+//         pointure: pointure,
+//         quantite_demandee: quantite_demandee,
+//         id_vendeur: id_vendeur
+//     };
+//     console.log(demande);
+//     fetch("http://localhost:3000/api_back/index.php/demandes", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(demande)
+//     })
+//         .then(response => response.json())
+//         .then((response) => {
+//             if (!response.ok) {
+//                 throw new Error("Erreur lors de l'ajout de la demande");
+//             }
+//             return response.json();
+//         })
+//         .then((response) => {
+//             console.log(response);
+//             if (response.success) {
+//                 console.log("Demande ajoutée avec succès");
+//             } else {
+//                 console.error("Erreur lors de l'ajout de la demande");
+//             }
+//         })
+//         .catch((error) => {
+//             console.error("Erreur:", error);
+//         });
+// }
 
 
 // Faire un fetch pour ajouter les id du modèle de chaussure et du vendeur dans la table des demandes
 
-const addModeleForm = document.querySelector("#btnEnvoyerDemande");
-addModeleForm.addEventListener("click", function (e) {
+const addDemandeForm = document.querySelector("#btnEnvoyerDemande");
+addDemandeForm.addEventListener("click", function (e) {
   e.preventDefault();
     const form = document.querySelector("#demandeForm");
-    const formData = new FormData(form); // Créer un FormData pour gérer les fichiers et les champs du formulaire
+    const formData = new FormData(form); 
+    console.log(formData);
     const messageContainer = document.querySelector("#messageContainerDemande");
 
   fetch("http://localhost:3000/api_back/index.php/demandes", {
     method: "POST", 
     body: formData,
     headers: {
-      "Accept": "application/json"
-      // "Content-Type": "application/json", // Ne pas définir Content-Type pour FormData, le navigateur le gère automatiquement
-    },
+      "Accept": "application/json",
+      "Content-Type": "application/json",},
   })
     .then((res) => res.json())
     .then((data) => {
@@ -214,7 +251,8 @@ addModeleForm.addEventListener("click", function (e) {
         }, 3000);
     });
     
-});
+}); // Ajout d'un délai de 3 secondes avant l'envoi du formulaire
+
 
 // récupèrer avce la jointure les demandes avec le nom des vendeurs et des clients
 // function getInfoDemande(id) {

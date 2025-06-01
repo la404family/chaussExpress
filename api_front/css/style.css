@@ -235,6 +235,7 @@ h3 {
     align-items: center;
     flex-wrap: wrap;
     width: 100%;
+    height: a;
     border-radius: 20px;
     background-color: rgba(13, 43, 71, 0.704);
 }

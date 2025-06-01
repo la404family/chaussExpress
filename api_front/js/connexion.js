@@ -1,69 +1,25 @@
 
 const connexionForm = document.querySelector('#connexionForm');
-const inscriptionLink = document.querySelector('#inscriptionLink');
+const btn= document.querySelector('#btnSeConnecter');
+const body = document.querySelector('body');
 const messageContainer = document.querySelector('#messageContainerConnexion'); 
+console.log(connexionForm);
 
 
-
-// faire un fetch pour récupérer les données de l'utilisateur
-function getUsers() {
-    fetch(`http://localhost:3000/api_back/index.php/vendeurs`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-        if (data.success) {
-            console.log(data);
-        } else {
-            console.error('Erreur:', data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-    });
-}
-getUsers();
-
-
-
-
-
-
-
-
-//Faire un fetch pour envoyer les données du formulaire de connexion
-connexionForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(connexionForm);
-
-    fetch('/api_back/controllers/userController.php?action=login', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-      //      afficher un message pour indiquer que la connexion a réussi
-            const messageContainer = document.querySelector('#messageContainerConnexion');
-            messageContainer.textContent = data.message;
-            messageContainer.style.color = 'green';
-            setTimeout(() => {
-                messageContainer.textContent = '';
-            }, 4000);
-            window.location.href = '/api_front/html/connexion.html';
-        } else {
-            // Afficher un message d'erreur
-
-            const messageContainer = document.querySelector('#messageContainerConnexion');
-            messageContainer.textContent = data.message;
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-    });
+btn.addEventListener('click', (event) => {
+    event.preventDefault();   
+// Rediriger vers la page d'accueil après 2 secondes
+// ajouter un effet pendant 3 secondes sur du texte
+body.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+messageContainer.innerHTML = `<p>Connexion réussie ! Bienvenue sur votre espace de gestion de stock.</p>`;
+messageContainer.style.color = "green";
+messageContainer.style.fontSize = "20px";
+messageContainer.classList.add('bienvenueStyle');
+setTimeout(() => {
+      window.location.href = 'http://127.0.0.1:5500/api_front/html/index.html';
+}, 5000);
 });
+
+
+
+

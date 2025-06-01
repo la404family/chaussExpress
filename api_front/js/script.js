@@ -144,6 +144,7 @@ function getMarquesAll() {
         });
 }
 getMarquesAll(); 
+
 function deleteMarque(id) {
     fetch(`http://localhost:3000/api_back/index.php/marques?id=${id}`, {
         method: "DELETE",

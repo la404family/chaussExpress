@@ -152,6 +152,18 @@ class Modele {
             throw new \Exception("Erreur lors de la récupération des modèles par marque: " . $e->getMessage());
         }
     }
+ function getByNombreModele(int $nombre_modele): array
+    {
+        try {
+            $query = "SELECT * FROM " . $this->table . " WHERE nombre_modele = :nombre_modele";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['nombre_modele' => $nombre_modele]);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de la récupération des marques par nombre de modèles: " . $e->getMessage());
+        }
+    }
+
 }
 
 

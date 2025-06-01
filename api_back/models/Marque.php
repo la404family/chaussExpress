@@ -84,4 +84,5 @@ class Marque {
             throw new \Exception("Erreur lors de la mise à jour des marques: " . $e->getMessage());
         }
     }
+   
 }

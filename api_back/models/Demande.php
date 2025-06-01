@@ -36,12 +36,12 @@ class Demande {
     }
 
     // Créer une nouvelle demande 
-    public function create(string $nom, string $prenom, string $email, int $vendeur_id, int $modele_id, float $pointure, int $quantite): bool
+    public function create(string $nom, string $prenom, string $email, int $vendeur_id, int $modele_id, float $pointure, int $quantite_demandee): bool
     {
         try {
             $query = "INSERT INTO {$this->table} 
                       (nom, prenom, email, vendeur_id, modele_id, pointure, quantite_demandee, created_at, updated_at, archivee) 
-                      VALUES (:nom, :prenom, :email, :vendeur_id, :modele_id, :pointure, :quantite, NOW(), NOW(), 0)";
+                      VALUES (:nom, :prenom, :email, :vendeur_id, :modele_id, :pointure, :quantite_demandee, NOW(), NOW(), 0)";
             $stmt = $this->pdo->prepare($query);
             return $stmt->execute([
                 'nom' => $nom,
@@ -50,7 +50,7 @@ class Demande {
                 'vendeur_id' => $vendeur_id,
                 'modele_id' => $modele_id,
                 'pointure' => $pointure,
-                'quantite' => $quantite
+                'quantite_demandee' => $quantite_demandee
             ]);
         } catch (\PDOException $e) {
             throw new \Exception("Erreur lors de la création de la demande : " . $e->getMessage());

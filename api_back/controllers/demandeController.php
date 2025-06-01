@@ -35,13 +35,9 @@ class DemandeController {
 
             case 'POST':
                 try {
-                    if (empty($data)) {
-                        throw new Exception('Aucune donnée reçue');
-                    }
-                    // On attend dans $data : client_id, vendeur_id, modele_id, pointure, quantite, status (optionnel)
+            
                     if (
-                        isset($data['nom'], $data['prenom'], $data['email'], $data['vendeur_id'], $data['modele_id'], $data['pointure'], $data['quantite']) &&
-                        !empty($data['nom']) && !empty($data['prenom']) && !empty($data['email']) && !empty($data['vendeur_id']) && !empty($data['modele_id']) && !empty($data['pointure']) && !empty($data['quantite'])
+                        isset($data['nom']) && isset($data['prenom']) && isset($data['email']) && isset($data['vendeur_id']) && isset($data['modele_id']) && isset($data['pointure']) && isset($data['quantite_demandee']) && !empty($data['nom']) && !empty($data['prenom']) && !empty($data['email']) && !empty($data['vendeur_id']) && !empty($data['modele_id']) && !empty($data['pointure']) && !empty($data['quantite_demandee'])
                     ) {
                         $nom = $data['nom'];
                         $prenom = $data['prenom'];
@@ -49,9 +45,9 @@ class DemandeController {
                         $vendeur_id = (int) $data['vendeur_id'];
                         $modele_id = (int) $data['modele_id'];
                         $pointure = (float) $data['pointure'];
-                        $quantite = (int) $data['quantite'];
+                        $quantite_demandee = (int) $data['quantite_demandee'];
 
-                        $succes = $this->demandes->create($nom, $prenom, $email, $vendeur_id, $modele_id, $pointure, $quantite);
+                        $succes = $this->demandes->create($nom, $prenom, $email, $vendeur_id, $modele_id, $pointure, $quantite_demandee);
 
                         echo json_encode([
                             'success' => $succes,

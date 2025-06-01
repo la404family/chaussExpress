@@ -33,29 +33,28 @@
                   
                   <h2>Faire une demande</h2>
                   <form id="demandeForm" action="" method="post">
-                        <label for="clientName">Nom du client :</label>
-                        <input type="text" id="clientName" name="" required>
+                        <label for="nom">Nom du client :</label>
+                        <input type="text" id="nom" name="nom" required>
                         <label for="prenom">Prénom du client :</label>
                         <input type="text" id="prenom" name="prenom" required>
-                        <label for="clientEmail">Email du client :</label>
-                        <input type="email" id="clientEmail" name="email" required>
+                        <label for="email">Email du client :</label>
+                        <input type="email" id="email" name="email" required>
 
                         <label for="vendeurId">Vendeur :</label>
-                        <select id="vendeurId" name="vendeur_id" required>
+                        <select id="vendeur_id" name="vendeur_id" required>
                               <option value="">Sélectionner un vendeur</option>
                               <!-- Options injectées en JS -->
                         </select>
 
                         <label for="modele_demandé">Modèle demandé :</label>
-                        <select name="modele_id" id="modeleList" required>
+                        <select name="modele_id" id="modele_id" required>
                             <option value="">Sélectionner un modèle</option>
                         </select>
-                        <label for="pointure_demandee">Pointure demandée :</label>
-                        <input type="number" id="pointure_demandee" name="pointure_demandee" required>
+                        <label for="pointure">Pointure demandée :</label>
+                        <input type="number" id="pointure" name="pointure" required>
 
-                        </input>
                         <label for="quantite">Quantité :</label>
-                        <input type="number" id="quantite" name="quantite" min="1" required>
+                        <input type="number" id="quantite_demandee" name="quantite_demandee" min="1" required>
 
                         <button type="submit" id="btnEnvoyerDemande">Envoyer la demande</button>
                         <div id="messageContainerDemande"></div>

@@ -35,12 +35,10 @@ class PointureQuantiteController {
                 break;
 
             case 'POST':
-                  if (isset($data['modele_id']) && isset($data['pointure'], $data['quantite']) &&
-                        !empty($data['pointure']) &&
-                        !empty($data['quantite'])
+                  if (isset($data['modele_id']) && isset($data['pointure'], $data['quantite'])
                   ) {
                         $modele_id = (int)$data['modele_id'];
-                        $pointure = htmlspecialchars(strip_tags(trim($data['pointure'])));
+                        $pointure = (float)$data['pointure'];
                         $quantite = (int)$data['quantite'];
 
                         $success = $this->pointuresQuantite->create($modele_id, $pointure, $quantite);
@@ -54,25 +52,33 @@ class PointureQuantiteController {
                   }
                   break;
             case 'PUT':
-                  if (isset($data['id'], $data['pointure'], $data['quantite']) &&
-                        !empty($data['id']) &&
-                        !empty($data['pointure']) &&
-                        !empty($data['quantite'])
+                  if (isset( $data['modele_id'], $data['pointure'], $data['quantite'])
                   ) {
-                        $id = (int)$data['id'];
-                        $pointure = htmlspecialchars(strip_tags(trim($data['pointure'])));
+                        $modele_id = (int)$data['modele_id'];
+                        $pointure = (float)$data['pointure'];
                         $quantite = (int)$data['quantite'];
+                         if (is_numeric($modele_id) && is_numeric($pointure) && is_numeric($quantite)) {
+// Je conditionne ici que s'il y a une quantité existante, on veut ajouter la nouvelle valeur à la quantité existante
+                       $quantitePresente = $this->pointuresQuantite->getById($modele_id, $pointure);
 
-                        $success = $this->pointuresQuantite->update($id, $pointure, $quantite);
-                        echo json_encode([
-                              'success' => $success,
-                              'message' => $success ? 'Pointure mise à jour avec succès' : 'Erreur lors de la mise à jour de la pointure'
-                        ]);
-                  } else {
-                        echo json_encode(['success' => false, 'message' => 'Champs manquants']);
-                        exit;
-                  }
-                break;
+                            if ($quantitePresente) {
+                                  $quantiteTotale = (int)$quantitePresente['quantite'] + $quantite;
+                            } else {
+                                // Si pas de quantité existante, on considère la nouvelle seule
+                                $quantiteTotale = $quantite;
+                            }
+                        }
+                       $success = $this->pointuresQuantite->update($modele_id, $pointure, $quantiteTotale);
+
+        echo json_encode([
+            'success' => $success,
+            'message' => $success ? 'Pointure mise à jour avec succès' : 'Erreur lors de la mise à jour de la pointure'
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+        exit;
+    }
+    break;
 
             default:
                 echo json_encode(['success' => false, 'message' => 'Méthode non supportée']);

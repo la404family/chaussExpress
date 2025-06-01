@@ -113,8 +113,12 @@ function getModeles(id) {
                         const newDescription = formModifierModele.description.value;
                         const newPrix = formModifierModele.prix.value;
                         const newImage = formModifierModele.image.files[0]?.name || modele.image;
-
-                        if (!newModele || !newDescription || !newPrix || !newImage) {
+                        
+                        if (!formModifierModele.modele.value || 
+                            !formModifierModele.description.value || 
+                            !formModifierModele.prix.value || 
+                            !formModifierModele.image.files[0]
+                        ) {
                             console.log(formModifierModele.modele.value, formModifierModele.description.value, formModifierModele.prix.value, formModifierModele.image.files[0]);
                             const messageContainerModifierModele = cardModele.querySelector(
                                 "#messageContainerModifierModele"

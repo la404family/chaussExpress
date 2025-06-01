@@ -24,7 +24,7 @@ class ModeleController {
                 
                 case 'GET':
                     if (isset($_GET['id'])) {
-                        $result = $this->modeles->getByMarqueId($_GET['id']);
+                        $result = $this->modeles->getByNombreModele($_GET['id']);
 
                     } 
                     else {
@@ -51,6 +51,7 @@ class ModeleController {
         isset($_FILES['image']) && $_FILES['image']['error'] === 0
     ) {
         // Sécurisation des données
+        
         $modele = htmlspecialchars(strip_tags(trim($_POST['modele'])));
         $description = htmlspecialchars(strip_tags(trim($_POST['description'])));
         $prix = htmlspecialchars(strip_tags(trim($_POST['prix'])));
@@ -115,7 +116,7 @@ case 'PUT':
         $putData = json_decode(file_get_contents("php://input"), true);
         
         // Vérification des champs
-        if (empty($putData) || !isset($putData['id'], $putData['modele'], $putData['description'], $putData['prix'])) {
+        if (!isset($putData['id'], $putData['modele'], $putData['description'], $putData['prix'])) {
             throw new Exception('Tous les champs sont requis');
         }
 

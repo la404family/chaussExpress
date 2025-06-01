@@ -38,10 +38,11 @@ header{
 }
 #stocksList{
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-      /* flex-wrap: wrap;/ 
-      /* width: 90%; */
+      display: flex;      
+      justify-content: center;
+      /* flex-direction: column; */
+      flex-wrap: wrap;
+      width: 90%; 
 }
 #stocksList h2{
       text-align: center;
@@ -53,12 +54,12 @@ header{
       font-size: 1.5rem;
 } 
 #stocksList p{
-      text-align: center;
       
+      text-align: center;
       font-size: 1.1rem;
       color: #333;
       margin: 5px;
-      padding: 10px 20px;
+      padding: 15px 20px;
       background-color: rgba(255, 255, 255, 0.8);
       border-radius: 10px;
 }
@@ -70,8 +71,8 @@ header{
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       margin: 20px;
       padding: 5px;
-      /* width: 90%; */
-      height: 400px;
+      width: 90%;
+    height: 100px;
       background-color: rgba(255, 255, 255, 0.8);
 } 
 .cardStock span{
@@ -129,4 +130,12 @@ select{
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       margin: auto;
 
+}
+.btnSupprimerStock{
+      height: 40px;
+      background: none ;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
 }

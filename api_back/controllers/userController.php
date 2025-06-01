@@ -1,62 +1,125 @@
-<?php 
+<?php
+// require_once __DIR__ . '/../models/Vendeur.php';
+
+// class UserController {
+//     private $db;
+//     private $vendeurs;
+
+//     public function __construct($db) {
+//         $this->db = $db;
+//         $this->vendeurs = new Vendeur($db);
+//         session_start();
+//     }
+
+//     public function handleRequest($method, $data) {
+//         switch ($method) {
+//             case 'POST':
+//                 // Si on a email et password dans $data => login automatique
+//                 if (!empty($data['email']) && !empty($data['password'])) {
+//                     $this->login($data);
+//                 } elseif (!empty($data['nom']) && !empty($data['prenom']) && !empty($data['email']) && !empty($data['password'])) {
+//                     // cas inscription
+//                     $this->register($data);
+//                 } else {
+//                     http_response_code(400);
+//                     echo json_encode(['success' => false, 'message' => 'Données POST invalides']);
+//                 }
+//                 break;
+
+//             default:
+//                 http_response_code(405);
+//                 echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+//                 break;
+//         }
+//     }
+
+//     private function login($data) {
+//         if (empty($data['email']) || empty($data['password'])) {
+//             http_response_code(400);
+//             echo json_encode(['success' => false, 'message' => 'Email et mot de passe requis']);
+//             return;
+//         }
+
+//         $vendeur = $this->vendeurs->getByEmail($data['email']);
+
+//         if ($vendeur && password_verify($data['password'], $vendeur['password'])) {
+//             $_SESSION['user_id'] = $vendeur['id'];
+//             $_SESSION['user_email'] = $vendeur['email'];
+//             echo json_encode(['success' => true, 'message' => 'Connexion réussie']);
+//         } else {
+//             http_response_code(401);
+//             echo json_encode(['success' => false, 'message' => 'Identifiants incorrects']);
+//         }
+//     }
+
+//     private function register($data) {
+//         if (empty($data['nom']) || empty($data['prenom']) || empty($data['email']) || empty($data['password'])) {
+//             http_response_code(400);
+//             echo json_encode(['success' => false, 'message' => 'Tous les champs sont requis']);
+//             return;
+//         }
+
+//         if ($this->vendeurs->getByEmail($data['email'])) {
+//             http_response_code(409);
+//             echo json_encode(['success' => false, 'message' => 'Email déjà utilisé']);
+//             return;
+//         }
+
+//         $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+//         $success = $this->vendeurs->create($data['nom'], $data['prenom'], $data['email'], $hashedPassword);
+
+//         if ($success) {
+//             echo json_encode(['success' => true, 'message' => 'Utilisateur créé avec succès']);
+//         } else {
+//             http_response_code(500);
+//             echo json_encode(['success' => false, 'message' => 'Erreur lors de la création']);
+//         }
+//     }
+// }
+
 require_once __DIR__ . '/../models/Vendeur.php';
 
-class UserController
-{
+class UserController {
     private $db;
+    private $vendeurs;
 
-    public function __construct($db)
-    {
+    public function __construct($db) {
         $this->db = $db;
+        $this->vendeurs = new Vendeur($db);
+        session_start();
     }
 
-      public function handleRequest($method, $data)
-      {
-            $vendeurs = new Vendeur($this->db);
+    public function handleRequest($method, $data) {
+        switch ($method) {
+            case 'POST':
+                if (!empty($data['email']) && !empty($data['password'])) {
+                    $this->login($data);
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'Email et mot de passe requis']);
+                }
+                break;
 
-            switch($method){
+            default:
+                http_response_code(405);
+                echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+                break;
+        }
+    }
 
-                 case 'POST':
-// J'utilise post pour la connexion et deconnexion en mettant des action pour différencier les deux
-// si l'action est "login" c'est pour la connexion et je fais les vérifs
+    private function login($data) {
+        $email = $data['email'];
+        $password = $data['password'];
 
-    if (isset($data['action'])) {
-        if ($data['action'] === 'login') {
-            if (empty($data['email']) || empty($data['password'])) {
-                echo json_encode(['success' => false, 'message' => 'Email et mot de passe requis']);
-                exit;
-            }
-// J'appelle la fonction qui récupère les email pour vérifier si le vendeur existe
-            $vendeur = $vendeurs->getByEmail($data['email']);
-// Je vérifie si le vendeur existe et si le mot de passe correspond
-            if (!$vendeur || !password_verify($data['password'], $vendeur['password_hash'])) {
-                echo json_encode(['success' => false, 'message' => 'Identifiants incorrects']);
-                exit;
-            }
-//Ensuite si tout ok je permet la connexion et je crée une session
-            session_start();
+        $vendeur = $this->vendeurs->getByEmail($email);
+
+        if ($vendeur && password_verify($password, $vendeur['password'])) {
             $_SESSION['vendeur_id'] = $vendeur['id'];
-// Je vériofie aussi s'il est admin ou non
-            $_SESSION['is_admin'] = $vendeur['is_admin'];
-
-            echo json_encode(['success' => true, 'message' => 'Connexion réussie', 'data' => $vendeur]);
-            exit;
-        }
-
-        if ($data['action'] === 'logout') {
-            // Déconnexion
-            session_start();
-            session_unset();
-            session_destroy();
-
-            echo json_encode(['success' => true, 'message' => 'Déconnexion réussie']);
-            exit;
+            $_SESSION['vendeur_email'] = $vendeur['email'];
+            echo json_encode(['success' => true, 'message' => 'Connexion réussie']);
+        } else {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'Identifiants incorrects']);
         }
     }
-
-    echo json_encode(['success' => false, 'message' => 'Action inconnue ou non spécifiée']);
-    break;
-            }
-
-        }
 }

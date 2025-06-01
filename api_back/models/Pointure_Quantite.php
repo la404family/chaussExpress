@@ -66,15 +66,15 @@ class PointureQuantite {
     }
 
  //Je crée ici une methode pour récupérer l'id du modèle et la poointure qui seront dans un select en front pour les modeles et pointures et dans un input pour la quantité
-    public function update(int $id, float $pointure, int $quantite): bool
+    public function update(int $modele_id, float $pointure, int $quantite): bool
     {
         try {
             $query = "UPDATE {$this->table} 
-                      SET pointure = :pointure, quantite = :quantite 
+                      SET modele_id = :modele_id, pointure = :pointure, quantite = :quantite 
                       WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
             return $stmt->execute([
-                'id'       => $id,
+                'modele_id' => $modele_id,
                 'pointure' => $pointure,
                 'quantite' => $quantite
             ]);
