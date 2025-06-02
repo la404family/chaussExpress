@@ -21,12 +21,12 @@ class Marque {
         }
     }
 
-    // Récupérer une marque par ID
+    // Récupérer une marque par son id sous former de tableau assoc ou bien null si non trouné 
     public function getById(int $id): ?array
     {
         try {
             $query = "SELECT * FROM " . $this->table . " WHERE id = :id";
-            $stmt = $this->pdo->prepare($query);
+            $stmt = $this->pdo->prepare($query); 
             $stmt->execute(['id' => $id]);
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             return $result ?: null;

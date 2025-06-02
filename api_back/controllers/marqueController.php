@@ -23,17 +23,17 @@ class MarqueController {
                 
                 case 'GET':
                     try {
-                        // Vérifie si un ID est passé dans l'URL
+                        // Vérifie si un ID est passé dans l'URL (pour moi dans le body du fetch pour certaines requêtes sinon ça ne passe pas)
                         if (isset($_GET['id']) && !empty($_GET['id'])) {
                             $result = $this->marques->getById($_GET['id']);
                             if (!$result) {
-                                throw new Exception('Marque non trouvée');
+                            echo json_encode(['error' => 'Marque non trouvée']);
                             }
                         } else {
-                            // Récupère toutes les marques
                             $result = $this->marques->getAll();
                         }   
                     } catch (Exception $e) {
+                        //Echo pour l'affichage
                         echo json_encode(['error' => 'Erreur lors de la récupération des marques: ' . $e->getMessage()]);
                         exit;
                     }
@@ -45,12 +45,16 @@ class MarqueController {
                     try {
                         // Vérifie si la requête contient des données
                         if (empty($data)) {
-                            throw new Exception('Aucune donnée reçue');
+                            echo json_encode([
+                                'success' => false,
+                                'message' => 'Aucune donnée reçue'
+                            ]);
+                            exit;
                         }
                         if (isset($data['marque']) && !empty($data['marque']) && !empty($data['marque']) && isset($data['marque'])) {
                             $marque = htmlspecialchars(strip_tags(trim($data['marque'])));
                             
-                            // Vérifie si la marque existe déjà
+                            // Vérifie si la marque existe déjà dans la base de données
                             $marquePresente = $this->marques->getByName($marque);
                             if ($marquePresente) {
                                 echo json_encode([
@@ -60,7 +64,7 @@ class MarqueController {
                                 exit;
                             }
                             
-                            // Vérifie la longueur
+                            // Vérifie la longueur du nom 
                             if (strlen($marque) < 2 || strlen($marque) > 30) {
                                 echo json_encode([
                                     'success' => false,
@@ -69,7 +73,7 @@ class MarqueController {
                                 exit;
                             }
                             
-                            // Création
+                            // Création de la marque si tout est ok
                             $succes = $this->marques->create($marque);
                             echo json_encode([
                                 'success' => $succes,

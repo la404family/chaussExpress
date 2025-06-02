@@ -31,14 +31,14 @@ function getMarquesAll() {
                     stocksContainer.appendChild(card);
 // Je crée ici le bouiton qui permet de voir les modèles associés à la marque.
 // Mettre en position absolute le bouton pour qu'il soit en bas de la carte car je n'aai pas de div qui permet de faire un flex
-                const modelesMarque = document.createElement("button");
-                console.log(modelesMarque);
+                // const modelesMarque = document.createElement("button");
+                // console.log(modelesMarque);
                 
-                modelesMarque.classList.add("modelesMarque");
-                modelesMarque.id = `modelesMarque-${marque.id}`;
-                modelesMarque.textContent = "Voir les modèles";
-                // Ajoute la carte au container
-                card.appendChild(modelesMarque);
+                // modelesMarque.classList.add("modelesMarque");
+                // modelesMarque.id = `modelesMarque-${marque.id}`;
+                // modelesMarque.textContent = "Voir les modèles";
+                // // Ajoute la carte au container
+                // card.appendChild(modelesMarque);
 
 // Je fais un event dans lequel je vais appeler la fonction qui récupère les modèles associés à la marque
 // Je fais un event dans lequel je vais appeler la fonction qui récupère les modèles associés à la marque
@@ -51,6 +51,11 @@ function getMarquesAll() {
 
 
  //Supprimer une marque dans le container
+ //Supprimer une marque dans le container
+ //Supprimer une marque dans le container
+ //Supprimer une marque dans le container
+ //Supprimer une marque dans le container
+ //Supprimer une marque dans le container
 
                 const btnSupprimer = card.querySelector(`#btnSupprimer-${marque.id}`);
                 btnSupprimer.addEventListener("click", () => {
@@ -59,8 +64,8 @@ function getMarquesAll() {
                         messageContainerSupprimer.innerHTML = `La marque <strong>${marque.marque}</strong> a été supprimée avec succès !`;
                         messageContainerSupprimer.style.color = "green";
                         setTimeout(() => {
-                            card.remove(); // Supprime la carte de la marque
-                        }, 3000); // Supprime le message après 3 secondes
+                            card.remove();
+                        }, 3000); 
                         deleteMarque(marque.id);
                     } else {
                         messageContainerSupprimer.innerHTML = `Suppression annulée.`;
@@ -71,7 +76,11 @@ function getMarquesAll() {
                     }
                 });
 
-                // Modifier une marque dans le container avec un formulaire
+                // Modifier une marque dans le container avec un formulire
+                // Modifier une marque dans le container avec un formulire
+                // Modifier une marque dans le container avec un formulire
+                // Modifier une marque dans le container avec un formulire
+                // Modifier une marque dans le container avec un formulire
                 const btnModifier = card.querySelector(`#btnModifier-${marque.id}`);
                 btnModifier.addEventListener("click", () => {
                     const formModifier = document.createElement("form");
@@ -108,7 +117,7 @@ function getMarquesAll() {
                                 <div class="messageContainerModifier" id="messageContainerModifier-${marque.id}"></div>
                                 <div class="messageContainerSupprimer" id="messageContainerSupprimer-${marque.id}"></div>
                                 `;
-                                window.location.reload(); // Rafraîchit la page pour afficher les modifications
+                                window.location.reload();
                             }, 3000);
                             updateMarque(marque.id, newMarque);
                         }
@@ -119,6 +128,7 @@ function getMarquesAll() {
                         messageContainerModifierAnnuler.textContent = "Modification annulée.";
                         messageContainerModifierAnnuler.style.color = "red";
                         setTimeout(() => {
+                            window.location.reload();
                             messageContainerModifierAnnuler.textContent = "";
                                 card.innerHTML = `
                     <h3>${marque.marque}</h3>
@@ -202,11 +212,8 @@ function updateMarque(id, newMarque) {
                 messageContainerModifierAnnuler.style.color = "green";
                 setTimeout(() => {
                     messageContainerModifierAnnuler.textContent = "";
-                }, 3000); // Supprime le message après 3 secondes
-                // Affiche le message de succès
-                // const messageContainerAjoutmarque = document.querySelector(
-                //     `#messageContainerAjoutmarque`
-                // );
+                }, 3000);
+              
                 if (data.success) {
                     messageContainerModifierAnnuler.textContent = data.message;
                     messageContainerModifierAnnuler.style.color = "green";
@@ -259,13 +266,13 @@ btnAjoutMarque.addEventListener("click", (e) => {
                         setTimeout(() => {
                             messageContainerAjoutmarque.textContent = "";
                             window.location.reload(); 
-                        }, 3000); // Supprime le message après 3 secondes   
+                        }, 3000);   
                     } else {
                         messageContainerAjoutmarque.textContent = data.message;
                         messageContainerAjoutmarque.style.color = "red";
                         setTimeout(() => {
                             messageContainerAjoutmarque.textContent = "";
-                        }, 3000); // Supprime le message après 3 secondes
+                        }, 3000); 
                     }
         
             })
@@ -277,9 +284,9 @@ btnAjoutMarque.addEventListener("click", (e) => {
                 messageContainerAjoutmarque.style.color = "red";
                 setTimeout(() => {
                     messageContainerAjoutmarque.textContent = "";
-                }, 3000); // Supprime le message après 3 secondes
+                }, 3000);
                 console.error("Erreur lors de la création de la marque :", error);
-                marqueInput.value = ""; // Réinitialise le champ de saisie
+                marqueInput.value = ""; 
             });
     } else {
         const messageContainerAjoutmarque = document.querySelector(
@@ -289,7 +296,7 @@ btnAjoutMarque.addEventListener("click", (e) => {
         messageContainerAjoutmarque.style.color = "red";
         setTimeout(() => {
             messageContainerAjoutmarque.textContent = "";
-        }, 3000); // Supprime le message après 3 secondes
+        }, 3000);
     }
 });
 

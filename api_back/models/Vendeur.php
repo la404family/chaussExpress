@@ -88,29 +88,32 @@ class Vendeur {
         }
     }
 
-    // Récupérer les demandes (clients_id depuis table `demandes`)
-    // Dans Vendeur.php
-public function getNombreDemandes() {
-    //refaire la requete sans alias
-    $stmt = $this->pdo->query(
-        "SELECT vendeurs.id,
-       vendeurs.nom,
-       vendeurs.prenom,
-       vendeurs.email,
-       vendeurs.is_admin,
-       COUNT(demandes.id) AS nb_demandes
-FROM vendeurs 
-LEFT JOIN demandes ON demandes.vendeur_id = vendeurs.id
-GROUP BY vendeurs.id");
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    // Récupérer les demandes (clients_id depuis table demandes)
 
- public function getByEmail($email) {
-        $stmt = $this->pdo->prepare("SELECT * FROM vendeurs WHERE email = :email");
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+        public function getNombreDemandes() {
+                    //refaire la requete sans alias
+                    $stmt = $this->pdo->query(
+                        "SELECT vendeurs.id,
+                    vendeurs.nom,
+                    vendeurs.date_creation,
+                    vendeurs.prenom,
+                    vendeurs.email,
+                    vendeurs.is_admin,
+                    COUNT(demandes.id) AS nb_demandes
+                FROM vendeurs 
+                LEFT JOIN demandes ON demandes.vendeur_id = vendeurs.id
+                GROUP BY vendeurs.date_creation, vendeurs.id, vendeurs.nom, vendeurs.prenom, vendeurs.email, vendeurs.is_admin
+                ORDER BY vendeurs.date_creation DESC"
+                );
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+
+            public function getByEmail($email) {
+                    $stmt = $this->pdo->prepare("SELECT * FROM vendeurs WHERE email = :email");
+                    $stmt->bindParam(':email', $email);
+                    $stmt->execute();
+                    return $stmt->fetch(PDO::FETCH_ASSOC);
+                }
 
 
 }

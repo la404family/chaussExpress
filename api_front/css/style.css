@@ -235,7 +235,6 @@ h3 {
     align-items: center;
     flex-wrap: wrap;
     width: 100%;
-    height: a;
     border-radius: 20px;
     background-color: rgba(13, 43, 71, 0.704);
 }
@@ -267,11 +266,11 @@ h3 {
     justify-content: space-around;
     align-items: center;
     background-color: whitesmoke;
-    margin: 3vw 1vw;
+    margin: 25px;
     border-radius: 5px;
     padding: 1vw;
-    width: 200px;
-    height: 240px;
+    width: 250px;
+    height: 320px;
     transition: 0.5s ease-in-out;
     box-shadow: 0 4px 8px rgba(33, 32, 32, 0.2);
     border: solid rgba(0, 0, 0, 0.217);
@@ -339,8 +338,8 @@ h3 {
     margin: 2vw 3vw;
     border-radius: 5px;
     padding: 1vw 2vw;
-    width: 20vw;
-    height: 60vh;
+    width: 300px;
+    height:550px;
     transition: 0.5s ease-in-out;
     box-shadow: 0 4px 8px rgba(46, 45, 45, 0.2);
     border: solid rgba(0, 0, 0, 0.217);

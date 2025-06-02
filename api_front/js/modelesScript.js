@@ -17,10 +17,9 @@ function getModeles(id) {
                     <h3>${modele.modele}</h3>
                     <p>${modele.description}</p> 
                     <img src="/api_back/uploads/${modele.image}" alt="${modele.modele}" width="200" height="auto" style="border-radius: 10px;"/>
+                    <p class="msgSuppression" id="messageContainerSupprimerModele"></p>
+                    <p class="msgModification" id="messageContainerModifierModele"></p>
                     <h4>${modele.prix}</h4>
-                    <span class="msgSuppression" id="messageContainerSupprimerModele"></span>
-                    <span class="msgModification" id="messageContainerModifierModele"></span>
-                    <span class="msgModele"></span>
                     <div class="supModBtn">
                     <button class="deleteModeleBtn">Supprimer</button>
                     <button class="editModeleBtn">Modifier</button></div>
@@ -33,7 +32,6 @@ function getModeles(id) {
                         <input type="file" id="image" name="image" accept="image/*" />
                         <div class="annulerModifierModele">
                         <button id="validerModifierModele" type="submit">Valider</button>
-                        <div id="messageContainerModifierModele"></div>
                         <button id="annulerModifierModele" class="annulerModifierModele">Annuler</button></div>
                 `;
                 modelesContainer.appendChild(cardModele);
@@ -73,6 +71,10 @@ function getModeles(id) {
 
                 // Modifier un modèle
                 // Modifier un modèle
+                // Modifier un modèle
+                // Modifier un modèle
+                // Modifier un modèle
+                // Modifier un modèle
                 const editModeleBtn = cardModele.querySelector(".editModeleBtn");
                 // console.log(editModeleBtn);
                 editModeleBtn.addEventListener("click", () => {
@@ -109,10 +111,11 @@ function getModeles(id) {
                         formModifierModele.style.display = "none";
                          editModeleBtn.style.display = "block";
                         deleteModeleBtn.style.display = "block";
-                        const newModele = formModifierModele.modele.value;
-                        const newDescription = formModifierModele.description.value;
-                        const newPrix = formModifierModele.prix.value;
-                        const newImage = formModifierModele.image.files[0]?.name || modele.image;
+
+                        // const newModele = formModifierModele.modele.value;
+                        // const newDescription = formModifierModele.description.value;
+                        // const newPrix = formModifierModele.prix.value;
+                        // const newImage = formModifierModele.image.files[0]?.name || modele.image;
                         
                         if (!formModifierModele.modele.value || 
                             !formModifierModele.description.value || 
@@ -135,11 +138,11 @@ function getModeles(id) {
                             const messageContainerModifierModele = cardModele.querySelector(
                                 "#messageContainerModifierModele"
                             );
+                            messageContainerModifierModele.textContent = "Modèle mis à jour avec succès !";
+                            messageContainerModifierModele.style.color = "green";
                             formModifierModele.style.display = "none";
                             editModeleBtn.style.display = "block";
                             deleteModeleBtn.style.display = "block";
-                            messageContainerModifierModele.textContent = "Modèle mis à jour avec succès !";
-                            messageContainerModifierModele.style.color = "green";
                             const newModele = formModifierModele.modele.value;
                             const newDescription = formModifierModele.description.value;
                             const newPrix = formModifierModele.prix.value;
@@ -220,9 +223,9 @@ function updateModele(id, modele, description, prix, image) {
     .then((data) => {
         console.log(data);
         if (data.success) {
-            const messageContainerModifierModele = document.querySelector("#messageContainerModifierModele");
-            messageContainerModifierModele.textContent = "Modèle mis à jour avec succès!";
-            messageContainerModifierModele.style.color = "green";
+            // const messageContainerModifierModele = document.querySelector("#messageContainerModifierModele");
+            // messageContainerModifierModele.textContent = "Modèle mis à jour avec succès!";
+            // messageContainerModifierModele.style.color = "green";
         } else {
             messageContainerModifierModele.textContent = data.message;
             messageContainerModifierModele.style.color = "red";
@@ -242,7 +245,7 @@ function updateModele(id, modele, description, prix, image) {
     });
 }
 
-// updateModele(); // Exemple d'appel de la fonction pour mettre à jour un modèle
+// updateModele();
 
 
 
@@ -277,7 +280,8 @@ const addModeleForm = document.querySelector("#addModeleForm");
 addModeleForm.addEventListener("submit", function (e) {
   e.preventDefault();
     const form = document.querySelector("#addModeleForm");
-    const formData = new FormData(form); // Créer un FormData pour gérer les fichiers et les champs du formulaire
+    // FormData est un objet qui gère les fichiers et les champs du formulaire pour récupérer les données
+    const formData = new FormData(form); 
     const messageContainer = document.querySelector("#messageContainerAjoutModele");
 
   fetch("http://localhost:3000/api_back/index.php/modeles", {
@@ -285,7 +289,7 @@ addModeleForm.addEventListener("submit", function (e) {
     body: formData,
     headers: {
       "Accept": "application/json",
-      // "Content-Type": "application/json", ( pas pour )
+      // "Content-Type": "application/json", ( pas pour formData )
     },
   })
     .then((res) => res.json())
@@ -315,7 +319,7 @@ addModeleForm.addEventListener("submit", function (e) {
         }, 3000);
     });
     
-}); // Ajout d'un délai de 3 secondes avant l'envoi du formulaire
+}); 
 
 
 // Selectionner les modèles d'une marque
@@ -344,9 +348,9 @@ function getModelesByMarque(marqueId) {
                 messageContainerAjoutmarque.style.color = "red";
                 setTimeout(() => {
                     messageContainerAjoutmarque.textContent = "";
-                }, 3000); // Supprime le message après 3 secondes
+                }, 3000); 
                 console.error("Erreur lors de la création de la marque :", error);
-                marqueInput.value = ""; // Réinitialise le champ de saisie
+                marqueInput.value = ""; 
             });
 
 }

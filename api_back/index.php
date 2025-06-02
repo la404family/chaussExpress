@@ -5,17 +5,20 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // J'inclus les fichiers nécessaires pour la connexion à la BDD et le controller
 require_once __DIR__ . '/config/Database.php';
-// Connexion à la BDD
 $database = new Database();
 $db = $database->getConnection();
-// j'ajoute la la connexion
 
 // J'ajoute les header CORS pour permettre d'appeler l'API depuis le front
+// Réponse renvoyéé en JSON
 header('Content-Type: application/json; charset=utf-8');
+//Pour permettre l'envoie de cookies et d'authentification(session, token, etc.)   
 header("Access-Control-Allow-Credentials: true");
+// Pour permettre l'accès à l'API depuis n'importe quelle origine (CORS)
 header("Access-Control-Allow-Origin: *");
+//POur autoriser les entêtes personnalisés
 header("Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
+
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Accept');
     exit;
@@ -27,11 +30,14 @@ $method = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents("php://input"), true);
 
 
-// Endpoint permet de lire dans l'url le type de requête( sans endpoint), par la suite on saura quel controller appeler
 
-// On récupère l'URI
+
+// On récupère dans le lien le chemin qui m'interesse pour pouvoir rediriger vers le bon controller. P
+// Ici on a le chemoin complet de l'url, ensuite on récupère qu ela dernière partie qui est la ressource demadée (sans les autres parametres de l'url comme ?id=1 par exemple)
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+// Explode permet de séparer les partie de l'url, et ici on demadne a le séparr avec un slash
 $uri = explode('/', $uri);
+//On récupère ici le dernier élément de l'URL qui correspond à la ressource demandée (/marques,/demandes,/modeles ect)
 $resource = end($uri);
 
 try{

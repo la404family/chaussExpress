@@ -37,7 +37,7 @@ class DemandeController {
                 try {
             
                     if (
-                        isset($data['nom']) && isset($data['prenom']) && isset($data['email']) && isset($data['vendeur_id']) && isset($data['modele_id']) && isset($data['pointure']) && isset($data['quantite_demandee']) && !empty($data['nom']) && !empty($data['prenom']) && !empty($data['email']) && !empty($data['vendeur_id']) && !empty($data['modele_id']) && !empty($data['pointure']) && !empty($data['quantite_demandee'])
+                        isset($data['nom']) && isset($data['prenom']) && isset($data['email']) && isset($data['vendeur_id']) && isset($data['modele_id']) && isset($data['pointure']) && isset($data['quantite_demandee'])
                     ) {
                         $nom = $data['nom'];
                         $prenom = $data['prenom'];
@@ -96,8 +96,6 @@ class DemandeController {
                         // Vérifie si la demande existe
                         $demandePresente = $this->demandes->getInfoDemande($id);
                         $archivee = filter_var($data['archivee'], FILTER_VALIDATE_BOOLEAN);
-
-                        // Vérifie si la demande existe
                         $demandePresente = $this->demandes->getInfoDemande($id);
                         if (!$demandePresente) {
                             echo json_encode([

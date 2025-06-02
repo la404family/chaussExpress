@@ -21,7 +21,7 @@ function getAllVendeurs() {
                 const card = document.createElement("div");
                 card.className = "card";
                 card.innerHTML = `
-                <p class="msgVendeur" id="msgVendeur${vendeur.id}"></p>
+                <span class="msgVendeur" id="msgVendeur${vendeur.id}"></span>
                 <button class="btnDemande" id="btnDemande${vendeur.id}">Voir les demandes</button>
                 <h3>${vendeur.prenom}</h3>
                       <h4>${vendeur.nom}</h4>
@@ -37,7 +37,7 @@ function getAllVendeurs() {
                   vendeursList.style.flexWrap = "wrap";
                   vendeursList.appendChild(card);
                 //mettre en condition pour changer la couleur du vendeur avec un certain nombre de demandes
-                //J'utilise un switvh(true) car ça permet de vérifier plusieurs conditions. Je mets true et pas une valeur spécifique
+                //J'utilise un switvh(true) car ça permet de vérifier plusieurs conditionsJe mets true et pas une valeur spécifique
               switch (true) {
                   
                   case vendeur.nb_demandes > 3 && vendeur.nb_demandes <= 6:
@@ -89,7 +89,7 @@ function getAllVendeurs() {
                               deleteVendeur(vendeur.id);
                         }else {
                               const msgVendeurElse = document.querySelector(`#msgVendeur${vendeur.id}`);
-                              msgVendeurElse.textContent = `Suppression de ${vendeur.prenom} est annulée`;
+                              msgVendeurElse.textContent = "`Suppression annulée`";
                               msgVendeurElse.style.color = "red";
                               setTimeout(() => {
                                     msgVendeurElse.textContent = "";
@@ -106,8 +106,8 @@ function getAllVendeurs() {
                         setTimeout(() => {
                               msgVendeur.textContent = "";
                         }, 3000);
-                        // Ici, vous pouvez ajouter la logique pour modifier le vendeur
-                        // Créeer un formulaire de modification
+                        
+                        // Créeer un formulaire de modification 
 
                         const modifierForm = document.createElement("form");
                         modifierForm.innerHTML = ` 
@@ -128,7 +128,7 @@ function getAllVendeurs() {
                     </form>`;
                         card.appendChild(modifierForm);
                         modifierForm.style.width = "300px";
-                        modifierForm.style.height = "450px";
+                        modifierForm.style.height = "550px";
                         modifierForm.style.position = "absolute";
                         modifierForm.style.top = "0";
                         modifierForm.style.left = "0%";

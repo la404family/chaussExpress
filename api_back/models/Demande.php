@@ -25,7 +25,7 @@ class Demande {
     public function getById(int $id): ?array
     {
         try {
-            $query = "SELECT * FROM {$this->table} WHERE id = :id";
+            $query = "SELECT * FROM {$this->table} WHERE id = :id ORDER BY id DESC";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute(['id' => $id]);
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -88,19 +88,21 @@ class Demande {
 
    
     // Jooinde pour récupérer les demandes avec les informations du client, vendeur et modèle
+    // d'abord ce qu'on veut afficher, AS=nouveau nom. From = à patir de quelle table on veut joindre. LEFT JOIN= joindree meme si rien dans la colonne. ON=quelle colonne on veut joindre
     public function getInfoDemande(): array
     {
         try {
             $query = "SELECT 
+            
   demandes.id,
     demandes.nom AS nom_client,
   demandes.prenom AS prenom_client,
   demandes.email AS email_client,
   vendeurs.prenom AS prenom_vendeur,
-created_at,
-  updated_at,
+  demandes.created_at,
+  demandes.updated_at,
   modeles.modele AS modele_chaussure,
-  demandes.pointure,
+  demandes.pointure, 
   demandes.quantite_demandee,
   demandes.archivee 
 FROM demandes

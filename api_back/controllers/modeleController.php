@@ -17,7 +17,7 @@ class ModeleController {
          $this->modeles = new Modele($this->pdo);
         }
         
-        // Fonction pour conditionner la requête 
+        // Fonction pour conditionner la requête en fonction de la méthode HTTP
         public function handleRequest($method, $data)
         {
             switch ($method) {
@@ -50,37 +50,38 @@ class ModeleController {
         !empty($_POST['marque_id']) &&
         isset($_FILES['image']) && $_FILES['image']['error'] === 0
     ) {
-        // Sécurisation des données
-        
+        // Sécurisation des données avec htmlspecialchars, strip_tags et trim
+
         $modele = htmlspecialchars(strip_tags(trim($_POST['modele'])));
         $description = htmlspecialchars(strip_tags(trim($_POST['description'])));
         $prix = htmlspecialchars(strip_tags(trim($_POST['prix'])));
         $marque_id = (int) $_POST['marque_id'];
-
+        
+        //La fonction basename() permet de récupérer le nom du fichier envoyé dans la formulaire
         $imageName = basename($_FILES['image']['name']);
         $uploadDir = __DIR__ . '/../uploads/';
-        $uploadPath = $uploadDir . $imageName;
+        $emplacementImage = $uploadDir . $imageName;
 
-        // Vérifier si le modèle existe déjà (par nom)
+        // Vérifier si le modèle existe déjà 
         $modeleExiste = $this->modeles->getByName($modele);
         if ($modeleExiste) {
             echo json_encode(['success' => false, 'message' => 'Le modèle existe déjà']);
             exit;
         }
 
-        // Vérification des longueurs
+        // Vérification des longueurs du nom de modele
         if (
-            strlen($modele) < 2 || strlen($modele) > 30 ||
-            strlen($description) < 20 || strlen($description) > 100 ||
-            strlen($prix) < 1 || strlen($prix) > 10 ||
+            strlen($modele) < 2 || strlen($modele) > 30 &&
+            strlen($description) < 20 || strlen($description) > 100 &&
+            strlen($prix) < 1 || strlen($prix) > 10 &&
             strlen($imageName) < 2 || strlen($imageName) > 150
         ) {
             echo json_encode(['success' => false, 'message' => 'Un ou plusieurs champs ont une longueur invalide']);
             exit;
         }
 
-        // Enregistrement de l'image
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
+        // Enregistrement de l'image dans mon dossier s'il y a  bien une image et un nom. ($_FILES['image'] est une variable superglobale qui contient les informations contenu dan le formulaire: name, type) et 'tmp_name' est le chemin  crée pas pho)
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $emplacementImage)) {
             $success = $this->modeles->createModele($modele, $description, $prix, $imageName, $marque_id);
             echo json_encode([
                 'success' => $success,
@@ -88,7 +89,7 @@ class ModeleController {
             ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Erreur lors du téléchargement de l\'image']);
-        }
+            }
 
     } else {
         echo json_encode(['success' => false, 'message' => 'Champs manquants ou image invalide']);
@@ -115,9 +116,10 @@ case 'PUT':
         // Récupérer les données PUT directement
         $putData = json_decode(file_get_contents("php://input"), true);
         
-        // Vérification des champs
+        // Vérification de la présence des champs
         if (!isset($putData['id'], $putData['modele'], $putData['description'], $putData['prix'])) {
-            throw new Exception('Tous les champs sont requis');
+            echo json_encode(['success' => false, 'message' => 'Tous les champs sont requis']);
+            exit;
         }
 
         // Nettoyage des données
@@ -128,14 +130,21 @@ case 'PUT':
         $image = $putData['image'] ?? null; // Optionnel pour la mise à jour
 
         // Validation
-        if (strlen($modele) < 2 || strlen($modele) > 30) {
-            throw new Exception('Le modèle doit contenir entre 2 et 30 caractères');
+        if (
+            strlen($modele) < 2 || strlen($modele) > 30 &&
+            strlen($description) < 20 || strlen($description) > 100 &&
+            strlen($prix) < 1 || strlen($prix) > 10 &&
+            strlen($image) < 2 || strlen($image) > 150
+        ) {
+            echo json_encode(['success' => false, 'message' => 'Un ou plusieurs champs ont une longueur invalide']);
+            exit;
         }
 
         // Mise à jour
         $success = $this->modeles->update($id, $modele, $description, $prix, $image);
         if (!$success) {
-            throw new Exception('Échec de la mise à jour du modèle');
+            echo json_encode(['success' => false, 'message' => 'Échec de la mise à jour du modèle']);
+            exit;
         }
         echo json_encode([
             'success' => $success,

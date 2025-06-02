@@ -150,7 +150,7 @@ h2 {
     transition: 0.2s ease-in-out;
 }
 /* -----------------------------Ajouter marque */
-
+/* 
 .form-container {
     display: flex;
     flex-direction: row;
@@ -168,9 +168,9 @@ h2 {
     border-radius: 15px;
     padding: 10px 20px;
     /* width: 30%; */
-    height: 200px;
-    transition: 0.2s ease-in-out;
-} */
+    /* height: 200px;
+    transition: 0.2s ease-in-out; */
+/* } */
 /* .ajouterModele { */
     /* justify-content: space-around;
     background-color: whitesmoke;

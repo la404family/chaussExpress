@@ -41,9 +41,9 @@ function getAllStocks() {
                 stockDiv.classList.add("stocks", "cardStock");
                 stockDiv.innerHTML = `
                 
-                ${stock.pointures.map((p) => `<p id="cardPointure"> ${p.pointure} ${p.quantite}</p>
                 <div id="messageContainerSupprimerModele"></div>
-                <button class="btnSupprimerStock" onclick="deleteStock(${stock.modele_id})">❌</button>
+                ${stock.pointures.map((p) => `<p id="cardPointure"> ${p.pointure} ${p.quantite}</p>
+                
                 `).join("")}
                `;
                 const stocksList = document.querySelector("#stocksList");
@@ -52,8 +52,13 @@ function getAllStocks() {
                 const btnSupprimerStock = stockDiv.querySelector(".btnSupprimerStock");
                 console.log(btnSupprimerStock);
 
-    //Supprimer un stock au click            
-               
+    //Supprimer un stock au click
+            //    btnSupprimerStock.addEventListener("click", () => {
+            //        const confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce stock ?");
+            //        if (confirmation) {
+            //            deleteStock(stock.modele_id);
+            //        }
+            //    });
       
             });
             // Je conditionne avce un switch pour coloré le carte en fonction de la quantité dispobible des pointure. Je séléctionne les cartes avec leur id et je fais une boucle pour chaque carte car les quantités sont dans un tableau (le tableau des pointures).
@@ -224,10 +229,10 @@ function deleteStock(id) {
             });
         })
         .catch((error) => {
-            // Afficher un message d'erreur
-            const messageContainerSupprimerModele = document.querySelector("#messageContainerSupprimerModele");
-            messageContainerSupprimerModele.textContent = "Erreur lors de la suppression du stock";
-         error = `${error.message}`;
+        //     // Afficher un message d'erreur
+        //     const messageContainerSupprimerModele = document.querySelector("#messageContainerSupprimerModele");
+        //     messageContainerSupprimerModele.textContent = "Erreur lorbfsxbhgds de la suppression du stock";
+        //  error = `${error.message}`;
         });
 }
-deleteStock(4);
+deleteStock();
