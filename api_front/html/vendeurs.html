@@ -33,7 +33,7 @@
                 <form id="inscriptionForm" action="" method="POST">
                     <div id="inscription">
                         <label for="userName">Nom d'utilisateur :</label>
-                        <input type="text" id="userName" name="nom" required />
+                        <input type="text" id="userName" name="nom" required  autocomplete=""/>
                         <label for="firstName">Prénom :</label>
                         <input type="text" id="firstName" name="prenom" required />
 
@@ -49,7 +49,7 @@
                         <input
                             type="password"
                             id="password"
-                            name="password"
+                            name="password_hash"
                             required
                             autocomplete="current-password"
                         />

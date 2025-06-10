@@ -55,12 +55,12 @@ class Vendeur {
     }
 
     // Mettre à jour un vendeur
-    public function update(int $id, string $nom, string $prenom, string $email, string $password, bool $is_admin): bool
+    public function update(int $id, string $nom, string $prenom, string $email, string $password_hash, bool $is_admin): bool
     {
         try {
             $query = "UPDATE {$this->table} 
                       SET nom = :nom, prenom = :prenom, email = :email, 
-                          password = :password, is_admin = :is_admin
+                          password_hash = :password_hash, is_admin = :is_admin
                       WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
             return $stmt->execute([
@@ -68,7 +68,7 @@ class Vendeur {
                 'nom'           => $nom,
                 'prenom'        => $prenom,
                 'email'        => $email,
-                'password'      => $password,
+                'password_hash' => $password_hash,
                 'is_admin'      => $is_admin ? 1 : 0
             ]);
         } catch (\PDOException $e) {

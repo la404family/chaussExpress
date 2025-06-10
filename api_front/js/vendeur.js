@@ -40,7 +40,7 @@ function getAllVendeurs() {
                 //J'utilise un switvh(true) car ça permet de vérifier plusieurs conditionsJe mets true et pas une valeur spécifique
               switch (true) {
                   
-                  case vendeur.nb_demandes > 3 && vendeur.nb_demandes <= 6:
+                  case vendeur.nb_demandes > 3:
                       card.style.backgroundColor = "lightcoral";
                   //     alert(
                   //         `Attention ${vendeur.prenom} a ${vendeur.nb_demandes} demandes en cours`
@@ -101,8 +101,8 @@ function getAllVendeurs() {
                 const editBtn = card.querySelector("#editBtn"); 
                   editBtn.addEventListener("click", () => {
                         const msgVendeur = document.querySelector(`#msgVendeur${vendeur.id}`);
-                        msgVendeur.textContent = `Modification de ${vendeur.prenom} en cours`;
-                        msgVendeur.style.color = "blue";
+                        msgVendeur.textContent = `Modification annulée pour ${vendeur.prenom}`;
+                        msgVendeur.style.color = "red";
                         setTimeout(() => {
                               msgVendeur.textContent = "";
                         }, 3000);
@@ -113,16 +113,17 @@ function getAllVendeurs() {
                         modifierForm.innerHTML = ` 
                         <form id="modifierForm"  method="post" class="modifierForm">	
                         <label for="modifierNom">Nom:</label>
-                        <input type="text" id="modifierNom" name="modifierNom" value="${vendeur.nom}" required>
+                        <input type="text" id="modifierNom" name="nom" value="${vendeur.nom}" required>
                         <label for="modifierPrenom">Prénom:</label>
-                        <input type="text" id="modifierPrenom" name="modifierPrenom" value="${vendeur.prenom}" required>
+                        <input type="text" id="modifierPrenom" name="prenom" value="${vendeur.prenom}" required>
                         <label for="modifierEmail">Email:</label>
-                        <input type="email" id="modifierEmail" name="modifierEmail" value="${vendeur.email}" required>
+                        <input type="email" id="modifierEmail" name="email" value="${vendeur.email}" required>
                         <label for="modifierPassword">Mot de passe:</label>
-                        <input type="password" id="modifierPassword" name="passeword" autocomplete="current-password" required>
+                        <input type="password" id="modifierPassword" name="password" autocomplete="current-password" required>
                         <label for="is_admin">Admin:</label> 
                         <input type="checkbox" id="is_admin" name="is_admin" ${vendeur.is_admin ? "checked" : ""}>
-                        <button id="validerModif" type="submit">Valider</button>
+                        <div id="messageModifier"></div>
+                        <button id="validerModif" type="submit">Valider la modification</button>
                         <button type="button" id="annulerModif">❌</button>
                   
                     </form>`;
@@ -136,10 +137,17 @@ function getAllVendeurs() {
                         modifierForm.style.backgroundColor = "whitesmoke";
                         modifierForm.style.zIndex = "1000";
 
-                        // Ajouter un event listener pour le bouton annuler
-                        const annulerBtn = modifierForm.querySelector("#annulerModif");
-                        annulerBtn.addEventListener("click", () => {
-                            card.removeChild(modifierForm);
+                        // Ajouter un event listener pour validation du formulaire de modification
+                        const validerBtn = modifierForm.querySelector("#validerModif");
+                        validerBtn.addEventListener("click", (e) => {
+                            e.preventDefault(); 
+                            const modifierNom = modifierForm.modifierNom.value;
+                            const modifierPrenom = modifierForm.modifierPrenom.value;  
+                            const modifierEmail = modifierForm.modifierEmail.value;
+                            const modifierPassword = modifierForm.modifierPassword.value;
+                            const isAdmin = modifierForm.is_admin.checked ? 1 : 0;
+                         
+                            modifierVendeur(vendeur.id, modifierNom, modifierPrenom, modifierEmail, modifierPassword, isAdmin);
                         });
 
                     });
@@ -294,21 +302,22 @@ deleteVendeur();
 //****************************************************************************************** */
 //****************************************************************************************** */
 // Modifier un vendendeur avec un formulaire en HTML et récupérer les données du formulaire
-function modifierVendeur(id) {
-    const modifierForm = document.querySelector("#modifierForm");
-    const msgContainer = document.querySelector("#messageContainerModifier");
+function modifierVendeur(id,nom, prenom, email, password_hash, is_admin) {
+    // const modifierForm = document.querySelector("#modifierForm");
+    const msgContainer = document.querySelector("#messageModifier");
 
-    fetch(`http://localhost:3000/api_back/index.php/vendeurs/${id}`, {
+    fetch(`http://localhost:3000/api_back/index.php/vendeurs`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            nom: modifierForm.modifierNom.value,
-            prenom: modifierForm.modifierPrenom.value,
-            email: modifierForm.modifierEmail.value,
-            password: modifierForm.modifierPassword.value,
-            is_admin: modifierForm.is_admin.checked ? 1 : 0
+            id: id,
+            nom: nom,
+            prenom: prenom,
+            email: email,
+            password_hash: password_hash,
+            is_admin: is_admin
         })
     })
     .then((response) => response.json())
@@ -333,5 +342,12 @@ function modifierVendeur(id) {
     })
     .catch((error) => {
         console.error("Erreur :", error);
+        const msgContainerError = document.querySelector("#messageModifier");
+        msgContainerError.textContent = error.message;
+        msgContainerError.style.display = "block";
+        msgContainerError.style.color = "red";
+        setTimeout(() => {
+            msgContainerError.style.display = "none";
+        }, 3000);
     });
 }

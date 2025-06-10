@@ -36,7 +36,7 @@ main {
       align-items: center;
 }
 .card {
-    width: 200px;
+    width: 230px;
     height: 400px;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;

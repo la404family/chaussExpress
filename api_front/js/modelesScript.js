@@ -251,6 +251,8 @@ function updateModele(id, modele, description, prix, image) {
 
 
 //Ajouter un modèle à une marque
+//Ajouter un modèle à une marque
+//Ajouter un modèle à une marque
 //D'abord, on récupère l'id de la marque
 function chargerMarques() {
   fetch("http://localhost:3000/api_back/index.php/marques")
@@ -300,7 +302,8 @@ addModeleForm.addEventListener("submit", function (e) {
         messageContainer.style.color = "green";
         setTimeout(() => {
             e.preventDefault();
-          messageContainer.textContent = "";
+            messageContainer.textContent = "";
+            window.location.reload();
         }, 3000);
       } else {
         messageContainer.textContent = data.message;

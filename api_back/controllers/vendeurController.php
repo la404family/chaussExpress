@@ -32,17 +32,17 @@ class VendeurController {
                 break;
 
             case 'POST':
-                  if (isset($data['nom'], $data['prenom'], $data['email'], $data['password'],$data['is_admin']) &&
+                  if (isset($data['nom'], $data['prenom'], $data['email'], $data['password_hash'],$data['is_admin']) &&
                         !empty($data['nom']) &&
                         !empty($data['prenom']) &&
                         !empty($data['email']) &&
-                        !empty($data['password']) &&
+                        !empty($data['password_hash']) &&
                         !empty($data['is_admin'])
                   ) {
                         $nom = htmlspecialchars(strip_tags(trim($data['nom'])));
                         $prenom = htmlspecialchars(strip_tags(trim($data['prenom'])));
                         $email = htmlspecialchars(strip_tags(trim($data['email'])));
-                        $password = password_hash(htmlspecialchars(strip_tags(trim($data['password']))), PASSWORD_BCRYPT);
+                        $password = password_hash(htmlspecialchars(strip_tags(trim($data['password_hash']))), PASSWORD_BCRYPT);
                         $is_admin = isset($data['is_admin']) ? (bool)$data['is_admin'] : false;
       
                         $success = $this->vendeurs->create($nom, $prenom, $email, $password, $is_admin);
@@ -56,22 +56,21 @@ class VendeurController {
                   }
                   break;
             case 'PUT': 
-                  if ( isset($data['id'], $data['nom'], $data['prenom'], $data['email'], $data['password'],$data['is_admin']) &&
-                        !empty($data['id']) &&
+                  if ( isset($data['id'], $data['nom'], $data['prenom'], $data['email'], $data['password_hash'],$data['is_admin'])
+                  && !empty($data['id']) &&
                         !empty($data['nom']) &&
                         !empty($data['prenom']) &&
                         !empty($data['email']) &&
-                        !empty($data['password']) &&
                         !empty($data['is_admin'])
                   ) {
                         $id = (int)$data['id'];
                         $nom = htmlspecialchars(strip_tags(trim($data['nom'])));
                         $prenom = htmlspecialchars(strip_tags(trim($data['prenom'])));
                         $email = htmlspecialchars(strip_tags(trim($data['email'])));
-                        $password = password_hash(htmlspecialchars(strip_tags(trim($data['password']))), PASSWORD_BCRYPT);
+                        $password_hash = password_hash(htmlspecialchars(strip_tags(trim($data['password_hash']))), PASSWORD_BCRYPT);
                         $is_admin = isset($data['is_admin']) ? (bool)$data['is_admin'] : false;
-      
-                        $success = $this->vendeurs->update($id, $nom, $prenom, $email, $password, $is_admin);
+
+                        $success = $this->vendeurs->update($id,$nom, $prenom, $email, $password_hash, $is_admin);
                         echo json_encode([
                               'success' => $success,
                               'message' => $success ? 'Vendeur mis à jour avec succès' : 'Erreur lors de la mise à jour du vendeur'
