@@ -32,10 +32,10 @@
                 <h2>Ajouter un Vendeur</h2>
                 <form id="inscriptionForm" action="" method="POST">
                     <div id="inscription">
-                        <label for="userName">Nom d'utilisateur :</label>
-                        <input type="text" id="userName" name="nom" required  autocomplete=""/>
-                        <label for="firstName">Prénom :</label>
-                        <input type="text" id="firstName" name="prenom" required />
+                        <label for="nom">Nom d'utilisateur :</label>
+                        <input type="text" id="nom" name="nom" required autocomplete="on"/>
+                        <label for="prenom">Prénom :</label>
+                        <input type="text" id="prenom" name="prenom" required autocomplete="on"/>
 
                         <label for="email">Email :</label>
                         <input
@@ -45,17 +45,18 @@
                             required
                             autocomplete="email"
                         />
-                        <label for="mdp">Mot de passe :</label>
+                        <label for="password_hash">Mot de passe :</label>
                         <input
                             type="password"
-                            id="password"
+                            id="password_hash"
                             name="password_hash"
                             required
                             autocomplete="current-password"
                         />
                         <div id="messageContainerInscription"></div>
-                        <input type="checkbox" id="isAdmin" name="is_admin" />
-                        <button type="submit" id="btnSinscrire">S'inscrire</button>
+                        <label for ="isAdmin">Admin :</label>
+                        <input type="checkbox" id="isAdmin" name="is_admin"/>
+                        <button type="submit" id="btnSinscrire">Ajouter le vendeur</button>
                     </div>
                 </form>
                 <div class="statistique"></div>

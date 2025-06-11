@@ -332,14 +332,14 @@ h3 {
 .card2 {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     background-color: whitesmoke;
     margin: 2vw 3vw;
-    border-radius: 5px;
+    border-radius: 20px;
     padding: 1vw 2vw;
-    width: 300px;
-    height:550px;
+    width: 290px;
+    height:80%;
     transition: 0.5s ease-in-out;
     box-shadow: 0 4px 8px rgba(46, 45, 45, 0.2);
     border: solid rgba(0, 0, 0, 0.217);
@@ -381,9 +381,9 @@ span {
 .card2Modifier {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    background-color: rgb(4, 40, 74);
+    background-color: rgb(20, 84, 85);
     margin: 2vw 3vw;
     border-radius: 5px;
     padding: 1vw 2vw;
@@ -398,6 +398,8 @@ span {
     border: 1px solid #ccc;
     border-radius: 15px;
     margin: 10px 0;
+    width: 300px;
+    height: 360px; 
 }
 .annulerModifierModele,
 .supModBtn {
@@ -416,6 +418,14 @@ span {
     font-size: 0.7rem;
     cursor: pointer;
     border-radius: 10px;
+}
+#modifierModele input {
+    width: 80%;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 .deleteModeleBtn {
     background: none;
@@ -440,6 +450,7 @@ span {
     border-radius: 10px;
     color: white;
 }
+
 .deleteModeleBtn:hover,
 .editModeleBtn:hover {
     transform: scale(1.1);

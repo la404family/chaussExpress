@@ -21,17 +21,17 @@ function getAllVendeurs() {
                 const card = document.createElement("div");
                 card.className = "card";
                 card.innerHTML = `
-                <span class="msgVendeur" id="msgVendeur${vendeur.id}"></span>
                 <button class="btnDemande" id="btnDemande${vendeur.id}">Voir les demandes</button>
                 <h3>${vendeur.prenom}</h3>
-                      <h4>${vendeur.nom}</h4>
-                      <p id="badge${vendeur.id}">${vendeur.is_admin == 0 ? "Vendeur" : "Admin"}</p>
-                      <h5>${new Date(
-                          vendeur.date_creation
-                      ).toLocaleDateString()}</h5>
-                      <button id="editBtn" id="edit${vendeur.id}">Modifier</button>
-                      <button id="deleteBtn" id="delete${vendeur.id}">Supprimer</button>
-                  `;
+                <h4>${vendeur.nom}</h4>
+                <p id="badge${vendeur.id}">${vendeur.is_admin == 0 ? "Vendeur" : "Admin"}</p>
+                <h5>${new Date(
+                    vendeur.date_creation
+                ).toLocaleDateString()}</h5>
+                <button id="editBtn" id="edit${vendeur.id}">Modifier</button>
+                <button id="deleteBtn" id="delete${vendeur.id}">Supprimer</button>
+                <span class="msgVendeur" id="msgVendeur${vendeur.id}"></span>
+                `;
                   vendeursList.style.display = "flex";
                   vendeursList.style.justifyContent = "space-around";
                   vendeursList.style.flexWrap = "wrap";
@@ -100,15 +100,8 @@ function getAllVendeurs() {
                   //ajouter un event listener pour le bouton modifier
                 const editBtn = card.querySelector("#editBtn"); 
                   editBtn.addEventListener("click", () => {
-                        const msgVendeur = document.querySelector(`#msgVendeur${vendeur.id}`);
-                        msgVendeur.textContent = `Modification annulée pour ${vendeur.prenom}`;
-                        msgVendeur.style.color = "red";
-                        setTimeout(() => {
-                              msgVendeur.textContent = "";
-                        }, 3000);
-                        
+    
                         // Créeer un formulaire de modification 
-
                         const modifierForm = document.createElement("form");
                         modifierForm.innerHTML = ` 
                         <form id="modifierForm"  method="post" class="modifierForm">	
@@ -118,42 +111,57 @@ function getAllVendeurs() {
                         <input type="text" id="modifierPrenom" name="prenom" value="${vendeur.prenom}" required>
                         <label for="modifierEmail">Email:</label>
                         <input type="email" id="modifierEmail" name="email" value="${vendeur.email}" required>
-                        <label for="modifierPassword">Mot de passe:</label>
-                        <input type="password" id="modifierPassword" name="password" autocomplete="current-password" required>
+            
                         <label for="is_admin">Admin:</label> 
                         <input type="checkbox" id="is_admin" name="is_admin" ${vendeur.is_admin ? "checked" : ""}>
-                        <div id="messageModifier"></div>
+                        <span class="messageModifier"></span>
                         <button id="validerModif" type="submit">Valider la modification</button>
                         <button type="button" id="annulerModif">❌</button>
                   
                     </form>`;
                         card.appendChild(modifierForm);
-                        modifierForm.style.width = "300px";
-                        modifierForm.style.height = "550px";
+                        modifierForm.style.width = "260px";
+                        modifierForm.style.height = "450px";
                         modifierForm.style.position = "absolute";
-                        modifierForm.style.top = "0";
-                        modifierForm.style.left = "0%";
-                  
                         modifierForm.style.backgroundColor = "whitesmoke";
                         modifierForm.style.zIndex = "1000";
 
                         // Ajouter un event listener pour validation du formulaire de modification
                         const validerBtn = modifierForm.querySelector("#validerModif");
+                        
                         validerBtn.addEventListener("click", (e) => {
                             e.preventDefault(); 
+
                             const modifierNom = modifierForm.modifierNom.value;
                             const modifierPrenom = modifierForm.modifierPrenom.value;  
                             const modifierEmail = modifierForm.modifierEmail.value;
-                            const modifierPassword = modifierForm.modifierPassword.value;
                             const isAdmin = modifierForm.is_admin.checked ? 1 : 0;
-                         
-                            modifierVendeur(vendeur.id, modifierNom, modifierPrenom, modifierEmail, modifierPassword, isAdmin);
+                            modifierVendeur(vendeur.id, modifierNom, modifierPrenom, modifierEmail, isAdmin);
+                            setTimeout(() => {
+                                modifierForm.remove();
+                                window.location.reload();
+                            }, 3000);
+                        });
+
+                        // Ajouter un event listener pour annuler la modification
+                        // Ajouter un event listener pour annuler la modification
+                        // Ajouter un event listener pour annuler la modification
+                        // Ajouter un event listener pour annuler la modification
+                        const annulerBtn = modifierForm.querySelector("#annulerModif");
+                        annulerBtn.addEventListener("click", () => {
+                            const msgmodifier = document.querySelector(`.messageModifier`);
+                            msgmodifier.textContent = `Modification annulée pour ${vendeur.prenom}`;
+                            msgmodifier.style.color = "red";
+                            setTimeout(() => {
+                                msgmodifier.textContent = "";
+                                modifierForm.remove();
+                            }, 3000);
                         });
 
                     });
 
-                    // Ajouter un gestionnaire d'événements pour le formulaire de modification
-
+                    // Ajouter un condition pour mettre en display none le formulaire de modification si un autre est déjà ouvert
+                   
             });
         });
 }
@@ -193,51 +201,65 @@ getAllVendeurs();
 
 
 // Ajouter un vendeur avce un formilaire en Hmtl en récupérant LES données du formulaire  
-      function addVendeur() {
-    const addVendeurForm = document.querySelector("#inscriptionForm");
-    const msgContainer = document.querySelector("#messageContainerInscription");
-
+function addVendeur(nomInput, prenomInput, emailInput, passwordInput, isAdminInput) {
+    
     fetch("http://localhost:3000/api_back/index.php/vendeurs", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            nom: addVendeurForm.nom.value,
-            prenom: addVendeurForm.prenom.value,
-            email: addVendeurForm.email.value,
-            password: addVendeurForm.password.value,
-            is_admin: addVendeurForm.is_admin.checked ? 1 : 0
+            nom: nomInput,
+            prenom: prenomInput,
+            email: emailInput,
+            password_hash: passwordInput,
+            is_admin: isAdminInput ? 1 : 0
         })
     })
     .then((response) => response.json())
     .then((data) => {
-        console.log(data);
         console.log("Réponse du serveur :", data);
+        const msgContainer = document.querySelector("#messageContainerInscription");
         if (data.success) {
+            
             msgContainer.textContent = data.message;
             msgContainer.style.display = "block";
             msgContainer.style.color = "green";
-         setTimeout(() => {
-            msgContainer.style.display = "none";
-            addVendeurForm.reset(); 
-            getAllVendeurs(); 
-         }, 3000);
-        } else {
-            msgContainer.textContent = data.message;
-            msgContainer.style.display = "block";
-            msgContainer.style.color = "red";
             setTimeout(() => {
                 msgContainer.style.display = "none";
-            }, 3000);   
-        }
-    })
-    .catch((error) => {
-        console.error("Erreur :", error);
-    });
+                getAllVendeurs(); 
+                window.location.reload();
+            }, 3000);
+       
+        } else {
+        msgContainer.textContent = data.message;
+        msgContainer.style.display = "block";
+        msgContainer.style.color = "red";
+        setTimeout(() => {
+            msgContainer.style.display = "none";
+        }, 3000);   
+    }
+})
+.catch((error) => {
+    console.error("Erreur :", error);
+});
 }
+const ajoutVendeurBtn = document.querySelector("#btnSinscrire");
+ajoutVendeurBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    const addVendeurForm = document.querySelector("#inscriptionForm");
+    const nomInput = addVendeurForm.nom.value;
+    const prenomInput = addVendeurForm.prenom.value;
+    const emailInput = addVendeurForm.email.value;
+    const passwordInput = addVendeurForm.password_hash.value;
+    const isAdminInput = addVendeurForm.is_admin.checked;
+    
+    console.log(nomInput, prenomInput, emailInput, passwordInput, isAdminInput);
+    addVendeur(nomInput, prenomInput, emailInput, passwordInput, isAdminInput);
+});
 
-addVendeur();
+// addVendeur();
+
 //****************************************************************************************** */
 //****************************************************************************************** */
 //****************************************************************************************** */
@@ -302,9 +324,9 @@ deleteVendeur();
 //****************************************************************************************** */
 //****************************************************************************************** */
 // Modifier un vendendeur avec un formulaire en HTML et récupérer les données du formulaire
-function modifierVendeur(id,nom, prenom, email, password_hash, is_admin) {
+function modifierVendeur(id,nom, prenom, email, is_admin) {
     // const modifierForm = document.querySelector("#modifierForm");
-    const msgContainer = document.querySelector("#messageModifier");
+    const msgContainer = document.querySelector(".messageModifier");
 
     fetch(`http://localhost:3000/api_back/index.php/vendeurs`, {
         method: "PUT",
@@ -316,7 +338,6 @@ function modifierVendeur(id,nom, prenom, email, password_hash, is_admin) {
             nom: nom,
             prenom: prenom,
             email: email,
-            password_hash: password_hash,
             is_admin: is_admin
         })
     })
@@ -330,6 +351,7 @@ function modifierVendeur(id,nom, prenom, email, password_hash, is_admin) {
             setTimeout(() => {
                 msgContainer.style.display = "none";
                 getAllVendeurs();
+          
             }, 3000);
         } else {
             msgContainer.textContent = data.message;
@@ -342,11 +364,12 @@ function modifierVendeur(id,nom, prenom, email, password_hash, is_admin) {
     })
     .catch((error) => {
         console.error("Erreur :", error);
-        const msgContainerError = document.querySelector("#messageModifier");
+        const msgContainerError = document.querySelector(".messageModifier");
         msgContainerError.textContent = error.message;
         msgContainerError.style.display = "block";
         msgContainerError.style.color = "red";
         setTimeout(() => {
+            msgContainerError.textContent = "";
             msgContainerError.style.display = "none";
         }, 3000);
     });

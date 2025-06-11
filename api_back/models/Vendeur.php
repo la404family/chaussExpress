@@ -36,7 +36,7 @@ class Vendeur {
     }
 
     // Créer un nouveau vendeur
-    public function create(string $nom, string $prenom, string $email, string $password, bool $is_admin = false): bool
+    public function create(string $nom, string $prenom, string $email, string $password_hash, bool $is_admin = false): bool
     {
         try {
             $query = "INSERT INTO {$this->table} (nom, prenom, email, password_hash, is_admin) 
@@ -45,8 +45,8 @@ class Vendeur {
             return $stmt->execute([
                 'nom'           => $nom,
                 'prenom'        => $prenom,
-                'email'        => $email,
-                'password'      => $password,
+                'email'          => $email,
+                'password_hash' => $password_hash,
                 'is_admin'      => $is_admin ? 1 : 0
             ]);
         } catch (\PDOException $e) {
@@ -55,12 +55,12 @@ class Vendeur {
     }
 
     // Mettre à jour un vendeur
-    public function update(int $id, string $nom, string $prenom, string $email, string $password_hash, bool $is_admin): bool
+    public function update(int $id, string $nom, string $prenom, string $email, bool $is_admin): bool
     {
         try {
             $query = "UPDATE {$this->table} 
                       SET nom = :nom, prenom = :prenom, email = :email, 
-                          password_hash = :password_hash, is_admin = :is_admin
+                          is_admin = :is_admin
                       WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
             return $stmt->execute([
@@ -68,7 +68,6 @@ class Vendeur {
                 'nom'           => $nom,
                 'prenom'        => $prenom,
                 'email'        => $email,
-                'password_hash' => $password_hash,
                 'is_admin'      => $is_admin ? 1 : 0
             ]);
         } catch (\PDOException $e) {
